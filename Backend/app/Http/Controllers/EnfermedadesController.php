@@ -44,5 +44,13 @@ class EnfermedadesController extends Controller
         return new EnfermedadesResources($enfermedades);
     }
 
+    public function destroy($id)
+    {
+        if (!$enfermedades = Enfermedades::find($id)) {
+            return response()->json(['errors' => 'No se encuentra la enfermedad que desea eliminar'], 404);
+        }
+        $enfermedades->delete();
+        return new EnfermedadesResources($enfermedades);
+    }
 }
 
