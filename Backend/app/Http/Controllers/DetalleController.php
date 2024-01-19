@@ -25,11 +25,12 @@ class DetalleController extends Controller
         return new DetalleResource(Detalle::create($request->all()));
     }
 
-    public function show($iddetalle)
+    public function show($idcabecera)
     {
-        if(!$detalle = Detalle::find($iddetalle)){
+        if(!$detalle = Detalle::where('idcabecera', $idcabecera)->get()->first){
+            dd($detalle);
             return response()->json(['errors'=>'No se encuentra un detalle con ese id'],404);
-        }
+        }        
         return new DetalleResource($detalle);
     }
 
