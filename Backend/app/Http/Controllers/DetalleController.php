@@ -27,11 +27,10 @@ class DetalleController extends Controller
 
     public function show($idcabecera)
     {
-        if(!$detalle = Detalle::where('idcabecera', $idcabecera)->get()->first){
-            dd($detalle);
+        if(!$detalle = Detalle::where('idcabecera', $idcabecera)->with(['item'])->with(['cabecera'])->get()){
             return response()->json(['errors'=>'No se encuentra un detalle con ese id'],404);
         }        
-        return new DetalleResource($detalle);
+        return DetalleResource::collection($detalle);
     }
 
     public function update(Request $request, $iddetalle)
