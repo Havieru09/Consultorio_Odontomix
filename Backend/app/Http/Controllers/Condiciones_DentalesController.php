@@ -15,4 +15,14 @@ class Condiciones_DentalesController extends Controller
        }
          return Condiciones_DentalesResource::collection($condiciones);
     }
+
+    public function update(Request $request, $idcondicionesd)
+    {
+        if (!$condicion = Condiciones_Dentales::find($idcondicionesd)) {
+            return response()->json(['errors' => 'No se encuentra la condicion en la base de datos'], 404);
+        }
+        $condicion->update($request->all());
+
+        return Condiciones_DentalesResource::make($condicion);
+}
 }
