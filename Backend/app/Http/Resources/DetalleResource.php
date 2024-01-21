@@ -17,6 +17,7 @@ class DetalleResource extends JsonResource
             'detalle' => $this->detalle,
             'cantidad' => $this->cantidad,
             'descuento_detalle' => $this->descuento_detalle,
+            'iva_detalle' => $this->iva_detalle,
             'subtotal_detalle' => $this->subtotal_detalle,
             'item' => $this->item,
             'cabecera' => $this->cabecera,
