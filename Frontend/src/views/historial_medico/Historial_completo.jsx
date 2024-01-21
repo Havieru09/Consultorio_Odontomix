@@ -28,12 +28,11 @@ export default function Historial_completo() {
     // console.log(isLoading);
 
 
-
+    console.log(historial_medico);
     if (historial_medico.length == 0) {
         return;
     }
 
-    // console.log(data);
     const printDocument = () => {
         const input = document.getElementById('divToPrint');
         
@@ -49,19 +48,15 @@ export default function Historial_completo() {
             const pdfWidth = pdf.internal.pageSize.getWidth() - 1.5;
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
             let heightLeft = pdfHeight;
-            
-            let position = -10; // Prueba con diferentes valores si es necesario
-
+            let position = -10;
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
             heightLeft -= pdf.internal.pageSize.getHeight();
-
             while (heightLeft >= 0) {
                 position = heightLeft - pdfHeight - 10;
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
                 heightLeft -= pdf.internal.pageSize.getHeight();
             }
-
             pdf.save('download.pdf');
         });
     };
@@ -75,12 +70,8 @@ export default function Historial_completo() {
 
                     <div className='flex max-h-40 justify-center items-center'>
 
-
                         <div className="flex justify-start">
-
                             <img src="../img/logo-sinfondo.png" className='max-h-40' alt="Logo" />
-
-
                         </div>
                         <div className='text-base font-bold flex-1 text-center '>
                             <h1 className="font-serif">CENTRO DE ATENCIÓN ODONTOLÓGICA – OD. JUAN MURILLO LLANOS</h1>

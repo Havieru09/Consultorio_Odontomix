@@ -5,17 +5,21 @@ import useSWR from 'swr';
 import clienteAxios from '../../config/axios';
 import useDental from '../../hooks/useDental';
 import { FaSearch } from 'react-icons/fa';
+// import { formatearDinero } from "../../helpers";
 export default function Facturacion() {
 
     const [items, setItems] = useState([]);
     const [num_documento, setNum_documento] = useState('');
-    const { handleErrorSweet, handleIngresarDatos } = useDental();
+    const { handleErrorSweet, handleIngresarDatos, handleEditarDatos } = useDental();
     const fetcher = () => clienteAxios('api/item').then(datos => datos.data)
     const { data, isLoading } = useSWR('api/item', fetcher)
-    const concepto = createRef();
+    const [concepto, setConcepto] = useState('');
+    // const concepto = createRef();
     const documento = createRef();
-    const [datosFactura, setDatosFactura] = useState([]);
-
+    // const [datosFactura, setDatosFactura] = useState([]);
+    const [facturaExistente, setFacturaExistente] = useState(false);
+    const [idFactura, setIdFactura] = useState(0);
+    const [detalles, setDetalles] = useState([]);
 
     const { data: dataClientes, isLoading: isLoadingClientes } = useSWR('api/clientes', () => clienteAxios('api/clientes').then(datos => datos.data));
 
@@ -29,8 +33,6 @@ export default function Facturacion() {
         }
     }
 
-
-    const [detalles, setDetalles] = useState([]);
     const agregarDetalle = () => {
         const nuevoDetalle = {
             id: Date.now(),
@@ -121,20 +123,13 @@ export default function Facturacion() {
     const actualizarDetalle = (id, campo, valor) => {
         const nuevosDetalles = detalles.map(detalle => {
             if (detalle.id === id) {
-
                 const detalleActualizado = { ...detalle, [campo]: valor };
-                // console.log((detalleActualizado.descuento_detalle));
                 const subtotal = Number(detalleActualizado.precio) * Number(detalleActualizado.cantidad);
                 const iva = detalleActualizado.iva / 100;
                 const totalConIVA = subtotal + (subtotal * iva);
                 detalleActualizado.subtotal_detalle = totalConIVA.toFixed(2);
 
-
-                // console.log((detalleActualizado?.itemSeleccionado || '').trim() !== '' && detalleActualizado.idItem > 0 && detalleActualizado.cantidad === '' && detalleActualizado.descuento_detalle === '' && detalleActualizado.precio === '');
-
                 const esCompleto = (detalleActualizado?.itemSeleccionado || '').trim() !== '' && detalleActualizado.idItem > 0 && detalleActualizado.cantidad !== '' && detalleActualizado.descuento_detalle !== '' && detalleActualizado.precio !== '';
-
-                console.log((detalleActualizado?.itemSeleccionado || '').trim() !== '' && detalleActualizado.precio !== '' && detalleActualizado.idItem > 0 && detalleActualizado.cantidad !== '' && detalleActualizado.descuento_detalle !== '');
 
                 const cantidadMenor = Number(detalleActualizado.cantidad) < 1;
                 const descuentoMenor = detalleActualizado.descuento_detalle < 0 || detalleActualizado.descuento_detalle === '' || Number(detalleActualizado.descuento_detalle) > Number(detalleActualizado.subtotal_detalle);
@@ -154,12 +149,15 @@ export default function Facturacion() {
     };
 
     useEffect(() => {
-        if (data && data.data) {
-            setItems(data.data);
-            let num = data.data.find(i => i.num_documento != '');
-            setNum_documento(num.n_documento);
+        if (!facturaExistente) {
+            if (data && data.data) {
+                setItems(data.data);
+                let num = data.data.find(i => i.num_documento != '');
+                setNum_documento(num.n_documento);
+                setConcepto('Factura # ' + num.n_documento);
+            }
         }
-    }, [data, num_documento]);
+    }, [data, num_documento, facturaExistente]);
 
     const handleEnviarFactura = async () => {
         const existeError = detalles.find(detalle => detalle.completo === false);
@@ -193,9 +191,10 @@ export default function Facturacion() {
                 descuento_factura: calcularDescuentoTotal(),
                 tiva_factura: calcularIVA(),
                 total_factura: calcularTotal(),
+                concepto_factura : concepto,
                 // detalles
             };
-            console.log(factura);
+            // console.log(factura);
             const data = await handleIngresarDatos(factura, 'api/cabecera', false, true, false);
             if (data) {
                 const idFactura = data.idcabecerafactura;
@@ -210,43 +209,83 @@ export default function Facturacion() {
                         subtotal_detalle: detalle.subtotal_detalle,
 
                     }
-                    console.log(detalleFactura);
+                    // console.log(detalleFactura);
                     await handleIngresarDatos(detalleFactura, 'api/detalle', false, true, false);
                 });
             }
+            handleLlamadoDeFactura(data.n_documento);
         }
     }
 
-    const handleLlamadoDeFactura = async () => {
-        const documentoFactura = documento.current.value;
+    const handleLlamadoDeFactura = async (valor = null) => {
+        if (valor) {
+            valor = documento.current.value;
+        }
+        console.log(valor);
+        const documentoFactura = valor;
         if (documentoFactura === '') {
             handleErrorSweet('Debe ingresar un numero de factura');
             return;
         }
+
         try {
             const response = await clienteAxios(`api/cabecera/${documentoFactura}`);
-            // console.log(response.data.data);
-            setDatosFactura(response.data.data);
+            // setDatosFactura(response.data.data);
             if (response.data.data.length === 0) {
                 handleErrorSweet('No existe la factura');
                 return;
             }
+            setIdFactura(response.data.data.idcabecerafactura);
+            // console.log(documentoFactura);
             const cliente = dataClientes.data?.find(c => c.idcliente === response.data.data.idcliente);
             setClienteSeleccionado(cliente);
-            // const detallesFactura = await clienteAxios(`api/detalle/${documentoFactura}`);
+            setFacturaExistente(true);
+            setNum_documento(documentoFactura);
+            setConcepto(response.data.data.concepto_factura);
+            // console.log(num_documento);
+            const detallesFactura = await clienteAxios(`api/detalle/${response.data.data.idcabecerafactura}`);
+            const detallesActualizados = detallesFactura.data.data.map(detalle => ({
+                iddetalle: detalle.iddetalle,
+                idItem: detalle.iditem,
+                detalle: detalle.detalle || '', // Asegúrate de que este campo existe en tus datos
+                precio: detalle.item.precio_item,
+                cantidad: detalle.cantidad,
+                iva: detalle.iva_detalle, // Asegúrate de que este campo existe en tus datos
+                descuento_detalle: detalle.descuento_detalle,
+                subtotal_detalle: detalle.subtotal_detalle,
+                existenItems: false, // Ajusta según sea necesario
+                completo: true, // Ajusta según sea necesario
+                itemSeleccionado: items.find(i => i.iditem === detalle.iditem)?.tratamientos_dentales.nombre_tratamiento || '',
+                // Añade aquí otros campos que necesites
+            }));
+            // console.log(detallesActualizados);
+            setDetalles(detallesActualizados);
         } catch (error) {
-            handleErrorSweet(error);
+            // console.log(error?.response?.data?.errors);
+            handleErrorSweet(error?.response?.data?.errors);
         }
     };
-    
+
+    const facturaNueva = () => {
+        setFacturaExistente(false);
+        setNum_documento('');
+        setConcepto('');
+        setDetalles([]);
+        setClienteSeleccionado({});
+    }
+
+    const handleAnularFactura = async () => {
+
+        const factura = {
+            estado_factura: 1,
+        };
+        
+        const data = await handleEditarDatos( idFactura,factura, 'api/cabecera', true, false, 'Desea anular la factura?');
+        facturaNueva();
+    }
 
     if (isLoading && isLoadingClientes) {
         return <Spinner />
-    }
-
-
-    if (num_documento === '') {
-        return;
     }
 
     return (
@@ -275,11 +314,11 @@ export default function Facturacion() {
                         </label>
                         <input
                             type="text"
-                            // defaultValue={`Factura #  ${num_documento}`}
+                            
                             className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="ingrese numero de factura"
+                            placeholder="Ingrese numero de factura"
                             ref={documento}
-                        ></input>
+                        />
                         <button onClick={handleLlamadoDeFactura} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
                             <FaSearch />
                         </button>
@@ -288,26 +327,28 @@ export default function Facturacion() {
                 <hr className='my-4' />
                 <div>
                     <div className="grid grid-cols-2 gap-x-4 mt-8 gap-y-5">
+                    <div className='flex justify-center items-center'>
+                            <label className='font-serif font-bold text-base mb-2 w-1/3'>
+                                N° Factura:
+                            </label>
+                            {/* lo */}
+                            <input disabled type="text" defaultValue={num_documento} className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+
+                        </div>
                         <div className='flex justify-center items-center'>
                             <label className='font-serif font-bold text-base mb-2 w-1/3'>
                                 Concepto:
                             </label>
                             <input
                                 type="text"
-                                defaultValue={`Factura #  ${num_documento}`}
+                                disabled={facturaExistente}
+                                defaultValue={concepto}
+                                onChange={(e) => setConcepto(e.target.value)}
                                 className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                placeholder="Concepto"
-
-                            ></input>
+                                // readOnly
+                            />
                         </div>
-                        <div className='flex justify-center items-center'>
-                            <label className='font-serif font-bold text-base mb-2 w-1/3'>
-                                N° Factura:
-                            </label>
-                            <label
-                                className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            >{num_documento}</label>
-                        </div>
+                        
 
                     </div>
                 </div>
@@ -322,7 +363,7 @@ export default function Facturacion() {
                         </label>
                         <label
                             className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >{(clienteSeleccionado?.nombre_cliente || '') + '' + (clienteSeleccionado?.apellidos_cliente || '')}</label>
+                        >{(clienteSeleccionado?.nombre_cliente || '') + ' ' + (clienteSeleccionado?.apellidos_cliente || '')}</label>
 
                     </div>
                     <div className='flex justify-center items-center'>
@@ -388,7 +429,7 @@ export default function Facturacion() {
                 </div>
                 <hr className='my-4' />
                 <div className="mb-4 flex-1 ">
-                    <button onClick={agregarDetalle} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <button onClick={agregarDetalle} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? 'hidden' : ''}`}>
                         Agregar Detalle
                     </button>
                 </div>
@@ -403,10 +444,11 @@ export default function Facturacion() {
                         <div className="text-center font-bold">Total</div>
                     </div>
                 </div>
-                {detalles.map(detalle => (
-                    <div key={detalle.id} className="grid grid-cols-10 gap-2 mb-4">
+                {detalles.map((detalle, index) => (
+                    <div key={index} className="grid grid-cols-10 gap-2 mb-4">
                         <div className='col-span-2 '>
                             <input
+                                disabled={facturaExistente}
                                 list="items"
                                 value={detalle.itemSeleccionado || ''}
                                 onChange={(e) => handleItemChange(detalle.id, e.target.value)}
@@ -430,6 +472,7 @@ export default function Facturacion() {
 
 
                             <input
+                                disabled={facturaExistente}
                                 type="text"
                                 className="col-span-2 shadow border py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
                                 defaultValue={detalle.detalle}
@@ -440,6 +483,7 @@ export default function Facturacion() {
                         <div className='col-span-1'>
 
                             <input
+                                disabled={facturaExistente}
                                 type="number"
                                 className="shadow border py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
                                 value={detalle.precio}
@@ -455,6 +499,7 @@ export default function Facturacion() {
                         </div>
                         <div className='col-span-1'>
                             <input
+                                disabled={facturaExistente}
                                 type="number"
                                 className="shadow border py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
                                 defaultValue={detalle.cantidad}
@@ -471,6 +516,7 @@ export default function Facturacion() {
                         </div>
                         <div className='col-span-1'>
                             <select
+                                disabled={facturaExistente}
                                 className="shadow border py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
                                 defaultValue={detalle.iva}
                                 onChange={(e) => actualizarDetalle(detalle.id, 'iva', e.target.value)}
@@ -482,6 +528,7 @@ export default function Facturacion() {
                         </div>
                         <div className='col-span-1'>
                             <input
+                                disabled={facturaExistente}
                                 type="number"
                                 pattern='[0-9]'
                                 className="shadow border py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
@@ -503,9 +550,9 @@ export default function Facturacion() {
                                 <span className="font-medium">{((1 + detalle.iva / 100) * (detalle.precio * detalle.cantidad) - detalle.descuento_detalle).toFixed(2)}</span>
                             </div>
                         </div>
-                        <div className='col-span-1'>
+                        <div className={`col-span-1 ${facturaExistente ? 'hidden': ''}`}>
                             <div className='flex justify-center'>
-                                <button onClick={() => eliminarDetalle(detalle.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                <button onClick={() => eliminarDetalle(detalle.id)} className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded `}>
                                     <MdDeleteForever />
                                 </button>
                             </div>
@@ -535,10 +582,17 @@ export default function Facturacion() {
                             <span className="font-medium">{calcularTotal()}</span>
                         </div>
                     </div>
-                    <div className='flex-1 text-center'>
-                        <button onClick={handleEnviarFactura} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <div className='flex-1 text-center flex justify-around'>
+                        <button onClick={handleEnviarFactura} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? 'hidden' : ''}`}>
                             Guardar
                         </button>
+                        <button onClick={handleAnularFactura} className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
+                            Anular factura
+                        </button>
+                        <button onClick={facturaNueva} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
+                            Crear nueva factura
+                        </button>
+
                     </div>
                 </div>
             </div>
