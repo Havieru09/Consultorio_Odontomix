@@ -68,7 +68,16 @@ export default function Sidebar() {
             Facturación
           </Link>
         </li>
-        
+        <li className='mb-2'>
+          <Link onClick={() => handleMenuClick('enfermedades')} to="/enfermedades/lista-enfermedades" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/enfermedades') ? 'bg-cyan-600' : ''}`}>
+            Enfermedades
+          </Link>
+        </li>
+        <li className='mb-2'>
+          <Link onClick={() => handleMenuClick('condiciones')} to="/condiciones/lista-condiciones" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/condiciones') ? 'bg-cyan-600' : ''}`}>
+            Condiciones Dentales
+          </Link>
+        </li>        
       </ul>
     </div>
   );

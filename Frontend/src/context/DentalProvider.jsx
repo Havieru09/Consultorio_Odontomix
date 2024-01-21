@@ -99,7 +99,7 @@ const DentalProvider = ({ children }) => {
                 }
             });
 
-            console.log(response.data.data.numero_ficha);
+            // console.log(response.data.data.numero_ficha);
 
             const estado_consulta = {
                 estado_consulta: 1
@@ -212,75 +212,7 @@ const DentalProvider = ({ children }) => {
         return mensajesError;
     }
 
-    // const handleEditarDatos = (id, usr, url, alerta = true) => {
-    //     try {
-    //         if (alerta) {
-    //             Swal.fire({
-    //                 title: `Desea actualizar informacion?`,
-    //                 showDenyButton: true,
-    //                 showCancelButton: true,
-    //                 confirmButtonText: 'Save',
-    //                 denyButtonText: `Don't save`,
-    //             }).then(async (result) => {
-    //                 if (result.isConfirmed) {
-    //                     try {
-
-    //                         const { data } = await clienteAxios.put(`${url}/${id}`, usr);
-    //                         mutate(url);
-    //                         setRefresh(!refresh);
-    //                         Swal.fire('Cambios Guardados!', '', 'success')
-    //                         toast.info(`Datos actualizado correctamente`);
-    //                         handleClickModal();
-
-    //                     } catch (error) {
-    //                         console.log(error?.response?.data?.errors);
-    //                         const mensajesError = handleErrores(error);
-    //                         Swal.fire({
-    //                             icon: 'error',
-    //                             title: 'Oops...',
-    //                             text: mensajesError[0]
-    //                         })
-    //                     }
-
-    //                 } else if (result.isDenied) {
-    //                     Swal.fire('No se guardaron los cambios', '', 'info')
-    //                     handleClickModal();
-    //                 }
-
-    //             })
-    //         } else {
-    //             try {
-    //                 async () => {
-    //                     const { data } = await clienteAxios.put(`${url}/${id}`, usr);
-    //                     mutate(url);
-    //                     setRefresh(!refresh);
-    //                     Swal.fire('Cambios Guardados!', '', 'success')
-    //                     toast.info(`Datos actualizado correctamente`);
-    //                     handleClickModal();
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error?.response?.data?.errors);
-    //                 const mensajesError = handleErrores(error);
-    //                 Swal.fire({
-    //                     icon: 'error',
-    //                     title: 'Oops...',
-    //                     text: mensajesError[0]
-    //                 })
-    //             }
-    //         }
-
-    //     } catch (error) {
-    //         console.log(error?.response?.data?.errors);
-    //         const mensajesError = handleErrores(error);
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Oops...',
-    //             text: mensajesError[0]
-    //         })
-    //     }
-    // }
-
-    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true) => {
+    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?') => {
         const actualizarDatos = async () => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
@@ -305,11 +237,11 @@ const DentalProvider = ({ children }) => {
         try {
             if (alerta) {
                 const result = await Swal.fire({
-                    title: `Desea actualizar información?`,
+                    title: mensaje,
                     showDenyButton: true,
                     showCancelButton: true,
-                    confirmButtonText: 'Save',
-                    denyButtonText: `Don't save`,
+                    confirmButtonText: 'Actualizar',
+                    denyButtonText: `No actualizar`,
                 });
 
                 if (result.isConfirmed) {
@@ -335,8 +267,8 @@ const DentalProvider = ({ children }) => {
         })
     }
 
-    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true) => {
-        console.log(id, url, text);
+    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, datos = null) => {
+        // console.log(id, url, text);
         if (alerta) {
             Swal.fire({
                 title: 'Estas seguro de eliminarlo?',
@@ -348,8 +280,17 @@ const DentalProvider = ({ children }) => {
                 confirmButtonText: 'Si, Eliminar!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log(clienteAxios.delete(`${url}/${id}`));
-                    mutate(url);
+                    clienteAxios.delete(`${url}/${id}`);
+                    console.log(url);
+                    if (datos) {
+                        datos.filter((dato) => dato.id !== id);
+                    }
+                    setTimeout(() => {
+                        setRefresh(!refresh);
+                        mutate(url);
+                    }, 1000);
+                    
+                    
                     Swal.fire(
                         'Eliminado!',
                         'Los datos fueron eliminados con exito.',

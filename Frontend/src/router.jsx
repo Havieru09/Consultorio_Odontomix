@@ -14,6 +14,8 @@ import Historial_medico from './views/historial_medico/Historial_medico';
 import Historial_completo from './views/historial_medico/Historial_completo';
 import Vistafactura from './views/facturacion/vista-factura';
 import Facturacion from './views/facturacion/facturacion';
+import Vistaenfermedades from './views/enfermedades/vista-enfermedades';
+import ListaCondiciones from './views/condiciones/lista-condiciones';
 
 const router = createBrowserRouter([
     {
@@ -138,6 +140,35 @@ const router = createBrowserRouter([
             }
         ],
     },
+
+    //enfermedades
+    {
+        path: '/enfermedades',
+        element: <Layout />,
+        children: [
+            {
+                path: '/enfermedades/lista-enfermedades',
+                element: <Vistaenfermedades />,
+            },
+            // {
+            //     path: '/enfermedades/facturacion',
+            //     element: <Facturacion />,
+            // }
+        ],
+    },
+
+    // condiciones
+    {
+        path: '/condiciones',
+        element: <Layout />,
+        children: [
+            {
+                path: '/condiciones/lista-condiciones',
+                element: <ListaCondiciones />,
+            },
+        ],
+    },
+
 ]);
 
 export default router;

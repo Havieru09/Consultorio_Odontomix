@@ -9,6 +9,8 @@ import 'sweetalert2/src/sweetalert2.scss'
 import PacienteModal from "../components/PacienteModal";
 import CitasModal from "../components/CitasModal";
 import ModalDiente from "../components/ModalDiente";
+import EnfermedadModal from "../components/EnfermedadModal";
+import CondicionesModal from "../components/CondicionesModal";
 const customStyles = {
   content: {
     top: '50%',
@@ -39,6 +41,8 @@ export default function Layout() {
         {tipoModal == 'paciente' ? <PacienteModal /> : null}
         {tipoModal == 'citas' ? <CitasModal /> : null}
         {tipoModal == 'odontograma' ? <ModalDiente /> : null}
+        {tipoModal == 'enfermedad' ? <EnfermedadModal /> : null}
+        {tipoModal == 'condicion' ? <CondicionesModal /> : null}
       </Modal>
       <ToastContainer />
     </>

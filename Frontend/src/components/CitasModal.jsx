@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { FaTimes } from "react-icons/fa";
 import { formatearFechaSinHora, formatearHora } from "../helpers";
 
+
 export default function CitasModal() {
   const { handleTipoModal, handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, handleEnvioMail } = useDental();
   const [clientes, setClientes] = useState([]);
@@ -139,6 +140,7 @@ export default function CitasModal() {
             }
             type="date"
             className={`shadow appearance-none border ${errores.fecha ? 'border-red-500' : ''} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+            min={new Date().toISOString().split('T')[0]}
           />
 
         </div>
