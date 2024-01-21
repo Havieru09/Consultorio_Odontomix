@@ -24,6 +24,7 @@ class Historial_Clinico extends Model
         'numero_ficha',
         'fecha_historial',
         'radiografia_historial',
+        'URL',
         'estado_historial',
     ];
 

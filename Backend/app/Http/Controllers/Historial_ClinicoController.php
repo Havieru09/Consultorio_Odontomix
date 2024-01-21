@@ -10,6 +10,7 @@ use App\Models\Clientes;
 use App\Models\Enfermedad_Paciente;
 use App\Models\Enfermedades;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Illuminate\Support\Facades\URL;
 
 class Historial_ClinicoController extends Controller
 {
@@ -27,8 +28,7 @@ class Historial_ClinicoController extends Controller
         $historial = new Historial_Clinico();
         if ($request->hasFile('radiografia_historial') && $request->file('radiografia_historial')->isValid()) {
             $archivo = $request->file('radiografia_historial');
-            $archivo_contenido = file_get_contents($archivo);
-            $historial->radiografia_historial = $archivo_contenido;
+            $ruta = $archivo->store('public/radiografias');
         } else {
             $archivo_contenido = null;
         }
@@ -58,6 +58,17 @@ class Historial_ClinicoController extends Controller
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
         return new Historial_ClinicoResource($historial);
+    }
+
+    public function obtener_radio($numero_ficha)
+    {
+        if (!$historial = Historial_Clinico::where('numero_ficha', $numero_ficha)->first()) {
+            return response()->json(['errors' => 'No se encuentra un registro'], 404);
+        }
+        echo($historial->radiografia_historial);
+        $tipo = 'image/png';
+        $imagen = $historial->radiografia_historial;
+        // return response($imagen)->header('Content-Type', $tipo);
     }
 
     public function show2($idpaciente)
