@@ -29,6 +29,7 @@ class Historial_ClinicoController extends Controller
         if ($request->hasFile('radiografia_historial') && $request->file('radiografia_historial')->isValid()) {
             $archivo = $request->file('radiografia_historial');
             $ruta = $archivo->store('public/radiografias');
+            $request->$ruta;
         } else {
             $archivo_contenido = null;
         }
