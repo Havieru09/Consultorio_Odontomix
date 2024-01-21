@@ -34,6 +34,7 @@ class Historial_ClinicoResource extends JsonResource
             'examen_extraoral' => new Examen_ExtraoralResource($this->examen_extraoral),
             'examen_intraoral' => new Examen_IntraoralResource($this->examen_intraoral),
             'pregunta' => new PreguntasResource($this->pregunta),
+            'radiografia_historial' => $this->radiografia_historial,
         ];
     }
 }
