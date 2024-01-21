@@ -15,6 +15,7 @@ class CabeceraResource extends JsonResource
             'n_documento' => $this->n_documento,
             'concepto_factura' => $this->concepto_factura,
             'descuento_factura' => $this->descuento_factura,
+            'tiva_factura' => $this->tiva_factura,
             'total_factura' => $this->total_factura,
             'fecha_factura' => $this->fecha_factura,
             'detalle' => $this->detalle,
