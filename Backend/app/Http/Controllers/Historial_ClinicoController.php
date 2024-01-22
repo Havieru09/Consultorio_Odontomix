@@ -62,15 +62,7 @@ class Historial_ClinicoController extends Controller
         if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('numero_ficha', $numero_ficha)->first()) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
-        return new Historial_ClinicoResource($historial);
-    }
-
-    public function obtener_radio($numero_ficha)
-    {
-        if (!$historial = Historial_Clinico::where('numero_ficha', $numero_ficha)->first()) {
-            return response()->json(['errors' => 'No se encuentra un registro'], 404);
-        }
-        $historial->URL = URL::to('/') . '/archivos/radiografias/' . $historial->radiografia_historial;
+        $historial->URL = URL::to('/') . '/archivos/' . $historial->radiografia_historial;
         return new Historial_ClinicoResource($historial);
     }
 

@@ -78,7 +78,6 @@ Route::apiResource('señas_particulares', Examen_SeñasController::class);
 Route::get('examenes_extraoral', [Examen_ExtraoralController::class, 'examenenes_extraoral']);
 Route::get('examenes_intraoral', [Examen_IntraoralController::class, 'examenenes_intraoral']);
 Route::get('informe/{numero_ficha}', [Historial_ClinicoController::class, 'informe']);
-Route::get('obtener_radio/{numero_ficha}', [Historial_ClinicoController::class, 'obtener_radio']);
 
 //API LOGIN
 Route::post('login', [AuthController::class, 'login']);
