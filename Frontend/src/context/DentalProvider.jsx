@@ -99,7 +99,7 @@ const DentalProvider = ({ children }) => {
                 }
             });
 
-            // console.log(response.data.data.numero_ficha);
+            console.log(response.data.data);
 
             const estado_consulta = {
                 estado_consulta: 1
@@ -109,7 +109,7 @@ const DentalProvider = ({ children }) => {
 
             toast.info(`Datos ingresados correctamente`);
             
-            navigate(`/odontograma/creacion-odontograma/${response.data.data.numero_ficha}`)
+            // navigate(`/odontograma/creacion-odontograma/${response.data.data.numero_ficha}`)
         } catch (error) {
 
             console.log(error);

@@ -9,7 +9,7 @@ import MiniSpinner from '../../components/MiniSpiner';
 // import useDental from '../../context/DentalContext';
 
 export default function FormularioHistorialM() {
-
+    
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [complications, setComplications] = useState(false);

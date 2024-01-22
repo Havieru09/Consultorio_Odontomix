@@ -247,7 +247,7 @@ export default function odontograma() {
                     <button onClick={handleGuardarOdontograma} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${Datosdientes && datosHistorial?.data?.estado_historial == 0 ? '':'hidden'}`}>
                         Guardar odontograma
                     </button>
-                    <button onClick={printDocument} className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Imprimir</button>
+                    {/* <button onClick={printDocument} className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Imprimir</button> */}
                 </div>
             </div>
         </div>

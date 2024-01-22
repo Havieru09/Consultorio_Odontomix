@@ -8,6 +8,8 @@ import useSWR from 'swr';
 import { useParams } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import axios from 'axios';
+
 
 export default function Historial_completo() {
     const [historial_medico, setHistorial_medico] = useState([]);
@@ -15,12 +17,14 @@ export default function Historial_completo() {
     // const { idHistorial } = useParams();
     const fetcher = () => clienteAxios(idHistorial ? `api/historial_medico/${idHistorial}` : null).then(datos => datos.data)
     const { data, error, isLoading } = useSWR(`api/historial_medico/${idHistorial}`, fetcher)
-    const [enfermedades, setEnfermedades] = useState([]);
+    // const [enfermedades, setEnfermedades] = useState([]);
+
+
 
     useEffect(() => {
         if (data && data.data) {
             setHistorial_medico(data.data);
-            setEnfermedades(data.data.enfermedad_paciente);
+            // setEnfermedades(data.data.enfermedad_paciente);
         }
     }, [data, isLoading, idHistorial]);
 
@@ -35,7 +39,7 @@ export default function Historial_completo() {
 
     const printDocument = () => {
         const input = document.getElementById('divToPrint');
-        
+
         window.scrollTo(0, 0);
 
         html2canvas(input, {
@@ -63,10 +67,57 @@ export default function Historial_completo() {
 
     const enfermedadesArray = historial_medico?.enfermedad_paciente;
 
+    const descargarImagen = async (url, nombreArchivo) => {
+        try {
+            const response = await axios.get(url, {
+                responseType: 'blob', // Importante para que Axios descargue el archivo correctamente
+            });
+
+            // Crear un enlace temporal para la descarga
+            const urlDescarga = window.URL.createObjectURL(new Blob([response.data]));
+            const enlace = document.createElement('a');
+            enlace.href = urlDescarga;
+            enlace.setAttribute('download', nombreArchivo); // Establece el nombre del archivo
+            document.body.appendChild(enlace);
+            enlace.click();
+
+            // Limpieza después de la descarga
+            document.body.removeChild(enlace);
+            window.URL.revokeObjectURL(urlDescarga);
+        } catch (error) {
+            console.error('Error al descargar la imagen:', error);
+        }
+    };
+
+    const handleDownloadClick = async () => {
+        try {
+            // Realizar la solicitud y esperar la respuesta
+            const response = await clienteAxios.get(`api/descargar/${idHistorial}`, {
+                responseType: 'blob' // Importante para recibir un archivo
+            });
+    
+            // Crear un enlace para la descarga
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', historial_medico?.radiografia_historial);
+            console.log(historial_medico?.radiografia_historial);
+            document.body.appendChild(link);
+            link.click();
+    
+            // Limpieza después de la descarga
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error al descargar el archivo:', error);
+        }
+    };
+    
+
     return (
-        <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+        <div id='divToPrint' className="min-h-screen bg-gray-100 flex justify-center items-center p-5">
             <div className="mt-4">
-                <div  className="w-full max-w-6xl bg-white shadow-md rounded px-8 pt-6 pb-8">
+                <div className="w-full max-w-6xl bg-white shadow-md rounded px-8 pt-6 pb-8">
 
                     <div className='flex max-h-40 justify-center items-center'>
 
@@ -251,10 +302,26 @@ export default function Historial_completo() {
                             <span className='ml-2 mb-2'>{historial_medico?.examen_intraoral.oclusion.nombre_oclusion}</span>
                         </div>
                     </div>
+                    {/* {console.log(historial_medico.URL)} */}
+
+                    <div className='flex justify-center items-center w-full flex-col mt-4'>
+                        <label className='border-b-2 font-serif font-bold text-center'>Archivo subido</label>
+                        <img className='w-1/2' src={`${historial_medico.URL}`} alt="" />
+                        <label className='font-serif font-bold text-center'>{historial_medico?.radiografia_historial || ''}</label>
+                    </div>
+
+                    {/*  boton para descargar imagen o archivo de la url*/}
+                    {/* <div className='flex justify-center mt-5'>
+                        <a href={`${historial_medico.URL}`} download={`${historial_medico.radiografia_historial}`} className='bg-blue-400 hover:bg-blue-500 text-white  py-2 px-4 rounded'>Descargar</a>
+                    </div> */}
 
                     <div className='flex justify-center mt-5'>
-                        <button onClick={printDocument} className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Imprimir</button>
+                        <button onClick={handleDownloadClick} className='bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded'>Descargar</button>
                     </div>
+
+                    {/* <div className='flex justify-center mt-5'>
+                        <button onClick={printDocument} className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Imprimir</button>
+                    </div> */}
 
                 </div>
             </div>
