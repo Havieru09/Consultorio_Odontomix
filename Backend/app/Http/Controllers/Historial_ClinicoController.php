@@ -66,6 +66,15 @@ class Historial_ClinicoController extends Controller
         return new Historial_ClinicoResource($historial);
     }
 
+    public function descargar($numero_ficha)
+    {
+        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('numero_ficha', $numero_ficha)->first()) {
+            return response()->json(['errors' => 'No se encuentra un registro'], 404);
+        }
+        $imagen = public_path('archivos/' . $historial->radiografia_historial);
+        return response()->download($imagen);
+    }
+
     public function show2($idpaciente)
     {
         if (!$historial = Historial_Clinico::where('idpaciente', $idpaciente)->where('estado_historial', 1)

@@ -90,6 +90,7 @@ Route::apiResource('cabecera', CabeceraController::class);
 //API MEDICA
 Route::apiResource('historial_medico', Historial_ClinicoController::class);
 Route::get('historial_medico2/{idpaciente}', [Historial_ClinicoController::class, 'show2']);
+Route::get('descargar/{numero_ficha}', [Historial_ClinicoController::class, 'descargar']);
 Route::apiResource('enfermedades', EnfermedadesController::class);
 Route::apiResource('enfermedad_paciente', Enfermedad_PacienteController::class);
 Route::apiResource('preguntas', PreguntasController::class);
