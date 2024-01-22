@@ -28,12 +28,16 @@ class Historial_ClinicoController extends Controller
         $historial = new Historial_Clinico();
         if ($request->hasFile('radiografia_historial') && $request->file('radiografia_historial')->isValid()) {
             $archivo = $request->file('radiografia_historial');
-            $ruta = $archivo->store('public/radiografias');
-            $request->$ruta;
+            $nombre = time() . '.' . $archivo->getClientOriginalExtension();
+            $historial->radiografia_historial = $nombre;
+            $archivo->move(public_path('archivos'), $nombre);
+            $historial->URL = URL::to('/') . '/archivos/' . $nombre;
+            $historial->fill($request->except('radiografia_historial'));
+            $historial->save();
         } else {
-            $archivo_contenido = null;
+            $archivo = null;
         }
-        return new Historial_ClinicoResource(Historial_Clinico::create($request->all()));
+        return new Historial_ClinicoResource($historial);
     }
 
     public function informe($numero_ficha)
@@ -66,10 +70,8 @@ class Historial_ClinicoController extends Controller
         if (!$historial = Historial_Clinico::where('numero_ficha', $numero_ficha)->first()) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
-        echo($historial->radiografia_historial);
-        $tipo = 'image/png';
-        $imagen = $historial->radiografia_historial;
-        // return response($imagen)->header('Content-Type', $tipo);
+        $historial->URL = URL::to('/') . '/archivos/radiografias/' . $historial->radiografia_historial;
+        return new Historial_ClinicoResource($historial);
     }
 
     public function show2($idpaciente)

@@ -27,6 +27,8 @@ class Historial_ClinicoResource extends JsonResource
             'idpregunta' => $this->idpregunta,
             'numero_ficha' => $this->numero_ficha,
             'fecha_historial' => date('d-m-Y', strtotime($this->fecha_historial)),
+            'radiografia_historial' => $this->radiografia_historial,
+            'URL' => $this->URL,
             'estado_historial' => $this->estado_historial,
             'consulta' => new ConsultaResource($this->consulta),
             'paciente' => new PacientesResource($this->paciente),
@@ -34,7 +36,7 @@ class Historial_ClinicoResource extends JsonResource
             'examen_extraoral' => new Examen_ExtraoralResource($this->examen_extraoral),
             'examen_intraoral' => new Examen_IntraoralResource($this->examen_intraoral),
             'pregunta' => new PreguntasResource($this->pregunta),
-            'radiografia_historial' => $this->radiografia_historial,
+
         ];
     }
 }
