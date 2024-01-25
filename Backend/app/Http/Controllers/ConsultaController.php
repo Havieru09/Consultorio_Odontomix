@@ -38,7 +38,7 @@ class ConsultaController extends Controller
     {
         $fecha_iniciohora = $request->fecha1." 00:00:00";
         $fecha_finalhora = $request->fecha2." 23:59:59";
-        if (!$consultas = Consulta::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->get()) {
+        if (!$consultas = Consulta::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->where('estado_consulta', 0)->get()) {
             return response()->json(['errors' => 'Cita no encontrada'], 404);
         }
         return ConsultaResource::collection($consultas);
