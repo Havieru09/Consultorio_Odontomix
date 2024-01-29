@@ -109,7 +109,7 @@ const DentalProvider = ({ children }) => {
 
             toast.info(`Datos ingresados correctamente`);
             
-            // navigate(`/odontograma/creacion-odontograma/${response.data.data.numero_ficha}`)
+            navigate(`/odontograma/creacion-odontograma/${response.data.data.numero_ficha}`)
         } catch (error) {
 
             console.log(error);
@@ -145,9 +145,9 @@ const DentalProvider = ({ children }) => {
                         fecha_consulta: new Date().toISOString().slice(0, 10) + ' ' + '00:00:00',
                         estado_consulta: 0,
                     }
-                    console.log(datos);
+                    // console.log(datos);
                     const { data: dataCita } = await clienteAxios.post(`api/consultas`, datos);
-                    console.log(dataCita);
+                    // console.log(dataCita);
                     setRefresh(!refresh);
                     Swal.fire('Cita actualizada correctamente!', '', 'success')
                     mutate(url);

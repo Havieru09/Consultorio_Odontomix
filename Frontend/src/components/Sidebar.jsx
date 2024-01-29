@@ -1,12 +1,25 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AiOutlineCaretDown, AiOutlineCaretLeft, AiOutlineCaretUp, AiOutlineMenu } from 'react-icons/ai'
+import { useAuth } from '../hooks/useAuth';
+
+
 export default function Sidebar() {
+  const { logout, user } = useAuth({ middleware: 'auth' });
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth/login');
+    }
+  }, [user, navigate]);
+
   const location = useLocation();
   const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Nuevo estado para controlar la visibilidad
   const sidebarWidth = isSidebarVisible ? 'w-64 px-5' : 'w-0 px-0 border-r-0'; // Controlar la anchura del sidebar
   const sidebarTransition = 'transition-width duration-300'; // Añadir transición suave
+  // const location = useLocation();
 
+  
   const isPathActive = (path) => {
     return location.pathname.includes(path);
   };
@@ -34,9 +47,12 @@ export default function Sidebar() {
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
+
+  // si user
+
   return (
     <div className='h-auto flex'>
-      
+
       <div className={`${sidebarWidth} ${sidebarTransition} space-y-6 py-7  bg-slate-800 text-white overflow-hidden`}>
         {/* <button onClick={toggleSidebar} className='p-2 text-white bg-slate-700'>
           {isSidebarVisible ? <AiOutlineCaretLeft /> : <AiOutlineMenu />}
@@ -67,6 +83,7 @@ export default function Sidebar() {
             </Link>
           </li>
           <li className='mb-2'>
+            {/* <li className={`mb-2  ${}`}> */}
             <Link onClick={() => handleMenuClick('lista-historial')} to="/historial/lista-historial" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/lista-historial') ? 'bg-cyan-600' : ''}`}>
               Historial Médico
             </Link>
@@ -92,9 +109,15 @@ export default function Sidebar() {
               Condiciones Dentales
             </Link>
           </li>
+          {/* logout */}
+          <li className='mb-2'>
+            <button onClick={logout} className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white`}>
+              Cerrar Sesión
+            </button>
+          </li>
         </ul>
       </div>
-      <button onClick={toggleSidebar} className='p-2 text-white bg-slate-700'>
+      <button onClick={toggleSidebar} className='p-2 text-white bg-slate-700'>        
         {isSidebarVisible ? <AiOutlineCaretLeft /> : <AiOutlineMenu />}
       </button>
     </div>
