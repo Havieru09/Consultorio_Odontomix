@@ -294,11 +294,7 @@ export default function Facturacion() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-            {anuladas && (
-                <div className="absolute top-0 left-0 right-0 bottom-0 bg-white bg-opacity-50 flex justify-center items-center z-10">
-                    <FcCancel size={100} className="opacity-75" />
-                </div>
-            )}
+
             <div className="w-full max-w-6xl bg-white shadow-md rounded px-8 pt-6 pb-8">
                 <div className='flex max-h-40 justify-center items-center'>
                     <div className="flex justify-start">
@@ -316,7 +312,7 @@ export default function Facturacion() {
                 </div>
                 <hr className='my-4' />
                 {/* buscador para numero factura */}
-                <div className='flex justify-center items-center'>
+                <div className='flex flex-col justify-center items-center '>
                     <div className='flex w-1/2 items-center gap-2'>
                         <label className='font-serif font-bold text-base mb-2 w-1/3'>
                             Buscar Factura:
@@ -332,6 +328,9 @@ export default function Facturacion() {
                             <FaSearch />
                         </button>
                     </div>
+                    <label className={` text-red-500 font-bold py-2 px-4 rounded text-4xl ${facturaExistente && anuladas ? '' : 'hidden'}`}>
+                        Factura anulada
+                    </label>
                 </div>
                 <hr className='my-4' />
                 <div>
@@ -595,9 +594,11 @@ export default function Facturacion() {
                         <button onClick={handleEnviarFactura} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? 'hidden' : ''}`}>
                             Guardar
                         </button>
-                        <button onClick={handleAnularFactura} className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
+                        <button onClick={handleAnularFactura} className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${facturaExistente && !anuladas ? '' : 'hidden'}`}>
                             Anular factura
                         </button>
+
+
                         <button onClick={facturaNueva} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
                             Crear nueva factura
                         </button>
@@ -605,7 +606,6 @@ export default function Facturacion() {
                     </div>
                 </div>
             </div>
-
         </div >
     )
 }

@@ -1,11 +1,12 @@
 import { createRef, useEffect, useState } from "react"
 import { useAuth } from "../hooks/useAuth";
 import Alerta from "../components/Alertas";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const nombre_usuario = createRef();
   const clave_usuario = createRef();
-
+  const navigate = useNavigate();
   const [errores, setErrores] = useState([]);
   const { login } = useAuth({
     middleware: 'guest',
@@ -15,7 +16,6 @@ export default function Login() {
 
   const handleSubmit = e => {
     e.preventDefault();
-
     const datos = {
       nombre_usuario: nombre_usuario.current.value,
       password: clave_usuario.current.value,

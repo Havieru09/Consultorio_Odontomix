@@ -328,6 +328,8 @@ const DentalProvider = ({ children }) => {
         }
     }
 
+    
+
     return (
         <DentalContext.Provider
             value={{
@@ -356,6 +358,7 @@ const DentalProvider = ({ children }) => {
                 setActualizar,
                 actualizarId,
                 setActualizarId,
+                
             }}
         >
             {children}

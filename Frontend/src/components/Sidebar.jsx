@@ -2,16 +2,25 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AiOutlineCaretDown, AiOutlineCaretLeft, AiOutlineCaretUp, AiOutlineMenu } from 'react-icons/ai'
 import { useAuth } from '../hooks/useAuth';
+import useDental from '../hooks/useDental';
+import Swal from 'sweetalert2';
 
 
 export default function Sidebar() {
+  // const {handleEjecutarFuncion} = useDental();  
+
   const { logout, user } = useAuth({ middleware: 'auth' });
   const navigate = useNavigate();
   useEffect(() => {
-    if (!user) {
+    if (localStorage.getItem('USUARIO') && !localStorage.getItem('USUARIO')) {
       navigate('/auth/login');
     }
   }, [user, navigate]);
+
+  // const handleCerrarSesion = () => {
+  //   handleEjecutarFuncion(logout);
+  // };
+
 
   const location = useLocation();
   const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Nuevo estado para controlar la visibilidad
@@ -19,7 +28,7 @@ export default function Sidebar() {
   const sidebarTransition = 'transition-width duration-300'; // Añadir transición suave
   // const location = useLocation();
 
-  
+
   const isPathActive = (path) => {
     return location.pathname.includes(path);
   };
@@ -35,6 +44,31 @@ export default function Sidebar() {
       setActiveSubMenu(null);  // Si no, abrimos el menú seleccionado.
     }
   };
+
+  const handleEjecutarFuncion = (funcion) => {
+    
+    Swal.fire({
+      title: 'Cerrar Sesión',
+      text: 'Estas seguro de Cerrar sesión?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Salir!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // console.log('cerrar sesion');
+        // console.log(localStorage.getItem('USUARIO'));
+        funcion();
+
+        // Swal.fire(
+        //     'Eliminado!',
+        //     'Los datos fueron eliminados con exito.',
+        //     'success'
+        // )
+      }
+    })
+  }
 
   const handleSubMenuClick = (menuName) => {
     if (activeMenu === menuName) {
@@ -54,9 +88,6 @@ export default function Sidebar() {
     <div className='h-auto flex'>
 
       <div className={`${sidebarWidth} ${sidebarTransition} space-y-6 py-7  bg-slate-800 text-white overflow-hidden`}>
-        {/* <button onClick={toggleSidebar} className='p-2 text-white bg-slate-700'>
-          {isSidebarVisible ? <AiOutlineCaretLeft /> : <AiOutlineMenu />}
-        </button> */}
         <Link to="/" className="text-xl font-semibold text-cyan-600 border-b-2 border-cyan-600 pb-2">
           <img src="../../img/odontomixSinFondo.png" alt="Logotipo menu" />
         </Link>
@@ -111,15 +142,16 @@ export default function Sidebar() {
           </li>
           {/* logout */}
           <li className='mb-2'>
-            <button onClick={logout} className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white`}>
+            <button onClick={() => handleEjecutarFuncion(logout)} className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-red-700 hover:text-white w-full text-start bg-red-600`}>
               Cerrar Sesión
             </button>
           </li>
         </ul>
       </div>
-      <button onClick={toggleSidebar} className='p-2 text-white bg-slate-700'>        
+      <button onClick={toggleSidebar} className='p-2 text-white bg-slate-700'>
         {isSidebarVisible ? <AiOutlineCaretLeft /> : <AiOutlineMenu />}
       </button>
+
     </div>
   );
 }

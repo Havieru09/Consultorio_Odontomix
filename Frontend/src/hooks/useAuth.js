@@ -21,7 +21,6 @@ export const useAuth = ({ middleware, url }) => {
             const { data } = await clienteAxios.post('api/login', datos);
             localStorage.setItem('USUARIO', data.user.nombre_usuario);
             localStorage.setItem('ROL', data.user.idroles);
-
             setErrores([]);
             if (data.user) {
                 navigate('/', { replace: true });
@@ -43,15 +42,18 @@ export const useAuth = ({ middleware, url }) => {
         }
     }
 
-    // const logout = async() => {
-    //     try{            
-    //         localStorage.removeItem('USUARIO');
-    //         localStorage.removeItem('AUTH_TOKEN');
-    //         await mutate(undefined);
-    //     }catch(error) {
-    //         throw Error(error?.response?.data?.errors)
-    //     }
-    // }
+    const logout = async() => {
+        try{
+            localStorage.removeItem('USUARIO');
+            localStorage.removeItem('AUTH_TOKEN');
+            await mutate(undefined);
+            setTimeout(() => {
+                navigate('/auth/login');
+            }, 1000);
+        }catch(error) {
+            throw Error(error?.response?.data?.errors)
+        }
+    }
 
     useEffect(() => {
         // Verifica primero si user está definido y luego si tiene la propiedad 'data'
@@ -63,6 +65,9 @@ export const useAuth = ({ middleware, url }) => {
         if(middleware === 'guest' && user && user.data.admin === 4) {
             navigate(url);
         }
+        if(middleware === 'auth' && !user) {
+            navigate('/auth/login');
+        }
         // Agregar lógica para manejar cuando haya un error
         if(middleware === 'auth' && error) {
             navigate('/auth/login');
@@ -73,7 +78,8 @@ export const useAuth = ({ middleware, url }) => {
         login,
         user,
         error,
-        mutate
+        mutate,
+        logout
         
     }
 }
