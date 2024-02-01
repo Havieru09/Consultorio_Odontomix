@@ -65,6 +65,7 @@ Route::post('envioCorreo', [EnvioCorreoController::class, 'envioCorreo']);
     Route::get('informe_citas', [CitaController::class, 'showCitasFechas']);
     Route::get('informe_consultas', [ConsultaController::class, 'showConsultasFechas']);
     Route::get('informe_citas_condicion', [CitaController::class, 'showCitasCondicion']);
+    Route::get('informe_consultas_condicion', [ConsultaController::class, 'showConsultasCondicion']);
 
 //API EXAMENES
 Route::apiResource('examen_atm', Examen_atmController::class);
