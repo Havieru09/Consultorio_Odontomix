@@ -44,6 +44,20 @@ class ConsultaController extends Controller
         return ConsultaResource::collection($consultas);
     }
 
+    public function showConsultasCondicion(Request $request)
+    {
+        $fecha_iniciohora = $request->fecha1." 00:00:00";
+        $fecha_finalhora = $request->fecha2." 23:59:59";
+        $condicion = $request->condicion;
+        if ($condicion == 1) {
+            $consultas = Consulta::whereBetween('fecha_consulta', [$fecha_iniciohora, $fecha_finalhora])->where('estado_consulta', 1)->get();
+            return ConsultaResource::collection($consultas);
+        } else {
+            $consultas = Consulta::whereBetween('fecha_consulta', [$fecha_iniciohora, $fecha_finalhora])->where('estado_consulta', 0)->get();
+            return ConsultaResource::collection($consultas);
+        }
+    }
+
     public function update(Request $request, $idconsulta)
     {
         if (!$consulta = Consulta::find($idconsulta)) {
