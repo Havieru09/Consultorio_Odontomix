@@ -49,11 +49,11 @@ class CitaController extends Controller
         $fecha_finalhora = $request->fecha2 . " 23:59:59";
         $condicion = $request->condicion;
         if ($condicion == 1) {
-            $citas = Cita::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->where('estado_cita', 1)->get();
-            return CitaResources::collection($citas);
+            $citas = Cita::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->where('estado_cita', 1)->count();
+            return "Tienes un total de $citas citas atendidas";
         } else {
-            $citas = Cita::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->where('estado_cita', 0)->get();
-            return CitaResources::collection($citas);
+            $citas = Cita::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->where('estado_cita', 0)->count();
+            return "Tienes un total de $citas citas pendientes";
         }
     }
 
