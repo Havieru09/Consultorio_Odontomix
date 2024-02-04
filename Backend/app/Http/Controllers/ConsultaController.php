@@ -50,11 +50,11 @@ class ConsultaController extends Controller
         $fecha_finalhora = $request->fecha2." 23:59:59";
         $condicion = $request->condicion;
         if ($condicion == 1) {
-            $consultas = Consulta::whereBetween('fecha_consulta', [$fecha_iniciohora, $fecha_finalhora])->where('estado_consulta', 1)->get();
-            return ConsultaResource::collection($consultas);
+            $consultas = Consulta::whereBetween('fecha_consulta', [$fecha_iniciohora, $fecha_finalhora])->where('estado_consulta', 1)->count();
+            return "Tienes un total de $consultas consultas atendidas";
         } else {
-            $consultas = Consulta::whereBetween('fecha_consulta', [$fecha_iniciohora, $fecha_finalhora])->where('estado_consulta', 0)->get();
-            return ConsultaResource::collection($consultas);
+            $consultas = Consulta::whereBetween('fecha_consulta', [$fecha_iniciohora, $fecha_finalhora])->where('estado_consulta', 0)->count();
+            return "Tienes un total de $consultas consultas pendientes";
         }
     }
 
