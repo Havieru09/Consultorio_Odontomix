@@ -55,24 +55,22 @@ export const useAuth = ({ middleware, url }) => {
         }
     }
 
-    useEffect(() => {
-        // Verifica primero si user está definido y luego si tiene la propiedad 'data'
-        if(user && user.data) {
-            if(middleware === 'guest' && (user.data.admin === 1 || user.data.admin === 2 || user.data.admin === 3)) {
-                navigate(url);
-            }
-        }
-        if(middleware === 'guest' && user && user.data.admin === 4) {
-            navigate(url);
-        }
-        if(middleware === 'auth' && !user) {
-            navigate('/auth/login');
-        }
-        // Agregar lógica para manejar cuando haya un error
-        if(middleware === 'auth' && error) {
-            navigate('/auth/login');
-        }
-    }, [user, error, middleware, navigate, url]);
+    // useEffect(() => {
+    //     // Verifica primero si user está definido y luego si tiene la propiedad 'data'
+    //     if(user && user.data) {
+    //         if(middleware === 'guest' && (user.data.admin === 1 || user.data.admin === 2 || user.data.admin === 3)) {
+    //             navigate('/');
+    //         }
+    //     }           
+
+    //     if(middleware === 'auth' && !user) {
+    //         navigate('/auth/login');
+    //     }
+    //     // Agregar lógica para manejar cuando haya un error
+    //     if(middleware === 'auth' && error) {
+    //         navigate('/auth/login');
+    //     }
+    // }, [user, error, middleware, navigate, url]);
 
     return {
         login,

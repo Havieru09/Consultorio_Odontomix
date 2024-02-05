@@ -11,6 +11,7 @@ import CitasModal from "../components/CitasModal";
 import ModalDiente from "../components/ModalDiente";
 import EnfermedadModal from "../components/EnfermedadModal";
 import CondicionesModal from "../components/CondicionesModal";
+import UsuarioModal from "../components/UsuarioModal";
 const customStyles = {
   content: {
     top: '50%',
@@ -43,6 +44,7 @@ export default function Layout() {
         {tipoModal == 'odontograma' ? <ModalDiente /> : null}
         {tipoModal == 'enfermedad' ? <EnfermedadModal /> : null}
         {tipoModal == 'condicion' ? <CondicionesModal /> : null}
+        {tipoModal == 'usuario' ? <UsuarioModal /> : null}
       </Modal>
       <ToastContainer />
     </>

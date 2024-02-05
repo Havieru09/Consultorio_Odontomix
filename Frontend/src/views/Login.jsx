@@ -4,15 +4,25 @@ import Alerta from "../components/Alertas";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+
+
   const nombre_usuario = createRef();
   const clave_usuario = createRef();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('USUARIO')) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   const [errores, setErrores] = useState([]);
   const { login } = useAuth({
     middleware: 'guest',
     url: '/'
   });
 
+  
 
   const handleSubmit = e => {
     e.preventDefault();

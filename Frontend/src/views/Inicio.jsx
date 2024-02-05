@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import clienteAxios from '../config/axios';
@@ -9,6 +8,8 @@ export default function Inicio() {
   const { handleErrorSweet } = useDental();
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
+  const [citas, setCitas] = useState('');
+  const [consultas, setConsultas] = useState('');
   const [datosGrafico, setDatosGrafico] = useState({
     labels: [],
     datasets: [{
@@ -51,11 +52,15 @@ export default function Inicio() {
     }
 
     try {
-      const { data } = await clienteAxios.get(`api/informe_citas`, {
+      const { data: datainforme } = await clienteAxios.get(`api/informe_citas`, {
         params: { fecha1: fechaDesde, fecha2: fechaHasta }
       });
-      console.log(data.data);
-      procesarDatos(data.data);
+      const { data: dataCantidadCita } = await clienteAxios.get(`api/informe_citas_condicion`, {
+        params: { fecha1: fechaDesde, fecha2: fechaHasta }
+      });
+      setCitas(dataCantidadCita);
+      console.log(citas);
+      procesarDatos(datainforme.data);
     } catch (error) {
       console.error('Error al obtener datos de la API', error);
     }
@@ -99,6 +104,11 @@ export default function Inicio() {
       const { data } = await clienteAxios.get(`api/informe_consultas`, {
         params: { fecha1: fechaDesde, fecha2: fechaHasta }
       });
+      const { data: dataCantidadConsulta } = await clienteAxios.get(`api/informe_consultas_condicion`, {
+        params: { fecha1: fechaDesde, fecha2: fechaHasta }
+      });
+      console.log({fecha1: fechaDesde, fecha2: fechaHasta});
+      setConsultas(dataCantidadConsulta);
       procesarDatosConsultas(data.data);
     } catch (error) {
       console.error('Error al obtener datos de la API para consultas', error);
@@ -107,7 +117,6 @@ export default function Inicio() {
 
   const procesarDatosConsultas = (datosApi) => {
     const contadorConsultasPorDia = datosApi.reduce((acc, consulta) => {
-      // Utilizamos 'fecha_consulta' en lugar de 'fechahora_cita'
       const partesFecha = consulta.fecha_consulta.split(' ')[0].split('-');
       const fechaFormateada = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`;
       const fecha = new Date(fechaFormateada).toLocaleDateString();
@@ -154,6 +163,28 @@ export default function Inicio() {
         </div>
         <div className="flex justify-center mt-6 w-full m-auto h-72">
           <Bar data={datosGraficoConsultas} />
+        </div>
+      </div>
+      <div>
+        {/*2 cards un de cantidad de citas pendientes y otra de cantidad consulta pendientes*/}
+        <div className="flex justify-around w-full mt-4">
+          <div className="w-1/3">
+            <div className="flex flex-col justify-center items-center bg-indigo-50 rounded-xl p-5">
+              <p className=" text-2xl font-medium text-center font-serif">Citas pendientes</p>
+              <div className="w-1/3">
+                <p className="text-gray-600 text-2xl font-medium text-center font-serif">{citas || 0}</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-1/3">
+          <div className="flex flex-col justify-center items-center bg-indigo-50 rounded-xl p-5">
+              <p className="text-2xl font-medium text-center font-serif">Consultas pendientes</p>
+              <div className="w-1/3">
+
+                <p className="text-gray-600 text-2xl font-medium text-center font-serif">{consultas || 0}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

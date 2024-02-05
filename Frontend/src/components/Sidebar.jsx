@@ -2,25 +2,19 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AiOutlineCaretDown, AiOutlineCaretLeft, AiOutlineCaretUp, AiOutlineMenu } from 'react-icons/ai'
 import { useAuth } from '../hooks/useAuth';
-import useDental from '../hooks/useDental';
 import Swal from 'sweetalert2';
 
 
 export default function Sidebar() {
-  // const {handleEjecutarFuncion} = useDental();  
-
   const { logout, user } = useAuth({ middleware: 'auth' });
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (localStorage.getItem('USUARIO') && !localStorage.getItem('USUARIO')) {
+    // console.log('user', user);
+    if (!localStorage.getItem('USUARIO')) {
       navigate('/auth/login');
     }
   }, [user, navigate]);
-
-  // const handleCerrarSesion = () => {
-  //   handleEjecutarFuncion(logout);
-  // };
-
 
   const location = useLocation();
   const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Nuevo estado para controlar la visibilidad
@@ -57,15 +51,7 @@ export default function Sidebar() {
       confirmButtonText: 'Si, Salir!'
     }).then((result) => {
       if (result.isConfirmed) {
-        // console.log('cerrar sesion');
-        // console.log(localStorage.getItem('USUARIO'));
         funcion();
-
-        // Swal.fire(
-        //     'Eliminado!',
-        //     'Los datos fueron eliminados con exito.',
-        //     'success'
-        // )
       }
     })
   }
@@ -81,8 +67,6 @@ export default function Sidebar() {
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
-
-  // si user
 
   return (
     <div className='h-auto flex'>
@@ -138,6 +122,11 @@ export default function Sidebar() {
           <li className='mb-2'>
             <Link onClick={() => handleMenuClick('condiciones')} to="/condiciones/lista-condiciones" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/condiciones') ? 'bg-cyan-600' : ''}`}>
               Condiciones Dentales
+            </Link>
+          </li>
+          <li className='mb-2'>
+            <Link onClick={() => handleMenuClick('/lista-user')} to="/usuarios/lista-user" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/lista-user') ? 'bg-cyan-600' : ''}`}>
+              Usuarios
             </Link>
           </li>
           {/* logout */}

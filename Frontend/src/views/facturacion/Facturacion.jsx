@@ -223,7 +223,6 @@ export default function Facturacion() {
         if (valor) {
             valor = documento.current.value;
         }
-        console.log(valor);
         const documentoFactura = valor;
         if (documentoFactura === '') {
             handleErrorSweet('Debe ingresar un numero de factura');
@@ -238,7 +237,6 @@ export default function Facturacion() {
                 return;
             }
             setIdFactura(response.data.data.idcabecerafactura);
-            console.log(response.data);
             setAnuladas(response.data.data.estado_factura === 1);
             // console.log(documentoFactura);
             const cliente = dataClientes.data?.find(c => c.idcliente === response.data.data.idcliente);
@@ -328,7 +326,7 @@ export default function Facturacion() {
                             <FaSearch />
                         </button>
                     </div>
-                    <label className={` text-red-500 font-bold py-2 px-4 rounded text-4xl ${facturaExistente && anuladas ? '' : 'hidden'}`}>
+                    <label className={` text-red-500 font-bold py-2 px-4 rounded text-4xl  ${facturaExistente && anuladas ? '' : 'hidden'}`}>
                         Factura anulada
                     </label>
                 </div>

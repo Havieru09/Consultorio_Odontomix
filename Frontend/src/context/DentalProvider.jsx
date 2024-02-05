@@ -134,15 +134,14 @@ const DentalProvider = ({ children }) => {
                 title: `Desea completar la cita?`,
                 showDenyButton: true,
                 showCancelButton: true,
-                confirmButtonText: 'Save',
-                denyButtonText: `Don't save`,
+                confirmButtonText: 'Si',
+                denyButtonText: `No completar`,
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     await clienteAxios.put(`${url}/${id}`, cita);
                     const datos = {
                         idcita: cita.idcita,
-                        motivo_consulta: cita.concepto_cita,
-                        fecha_consulta: new Date().toISOString().slice(0, 10) + ' ' + '00:00:00',
+                        motivo_consulta: cita.concepto_cita,                        
                         estado_consulta: 0,
                     }
                     // console.log(datos);
@@ -307,7 +306,6 @@ const DentalProvider = ({ children }) => {
     const handleDientes = async (id, url) => {
         try {
             const { data } = await clienteAxios.get(`${url}/${id}`);
-            console.log(data.data);
             setDientes(data.data);
         } catch (error) {
             console.log(error);
