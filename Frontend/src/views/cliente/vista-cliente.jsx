@@ -5,21 +5,29 @@ import useDental from "../../hooks/useDental";
 import clienteAxios from "../../config/axios";
 import useSWR from 'swr'
 import Spinner from "../../components/Spinner";
+import Pagination from '../../components/Pagination';
 
 export default function Vistacliente() {
 
-    const { handleClickModal, handleDatosActual, handleTipoModal, handleEliminarDatos  } = useDental();
+    const { handleClickModal, handleDatosActual, handleTipoModal, handleEliminarDatos } = useDental();
     const [clientes, setClientes] = useState([]);
-    
-    const fetcher = () => clienteAxios('api/clientes').then(datos => datos.data)
-    const { data, error,isLoading } = useSWR('api/clientes', fetcher)
+    const [paginaActual, setPaginaActual] = useState(1);
+    const [totalClientes, setTotalClientes] = useState(0);
+    const clientesPorPagina = 10;
+    const fetcher = () => clienteAxios(`api/clientes?page=${paginaActual}`).then(datos => datos.data)
+    const { data, error, isLoading } = useSWR(`api/clientes?page=${paginaActual}`, fetcher)
 
     useEffect(() => {
         handleTipoModal('cliente');
         if (data && data.data) {
             setClientes(data.data);
+            setTotalClientes(data.total);
         }
     }, [data, error]);
+
+    const cambiarPagina = (numeroPagina) => {
+        setPaginaActual(numeroPagina);
+    };
     
     if (isLoading) return <Spinner />
 
@@ -33,7 +41,7 @@ export default function Vistacliente() {
                     <FaPlus className="mr-2" /> Agregar Cliente
                 </button>
             </div>
-            <table className="min-w-full leading-normal">
+            <table className="min-w-full leading-normal mb-5">
                 <thead>
                     <tr>
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider ">
@@ -67,41 +75,47 @@ export default function Vistacliente() {
                                 No hay ningún paciente aún
                             </td>
                         </tr>
-                    ) : (  
+                    ) : (
 
-                    clientes.map(cliente => (
-                    <tr key={cliente.idcliente}>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-serif text-center">
-                            {cliente.nombre_cliente} {cliente.apellidos_cliente}
-                        </td>
+                        clientes.map(cliente => (
+                            <tr key={cliente.idcliente}>
+                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-serif text-center">
+                                    {cliente.nombre_cliente} {cliente.apellidos_cliente}
+                                </td>
 
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-mono text-right">
-                            {cliente.identificacion_cliente}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-serif text-center">
-                            {cliente.genero_cliente}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-mono text-right">
-                            {cliente.edad_cliente}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-mono text-right">
-                            {cliente.telefono_cliente}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-serif text-center">
-                            {cliente.correo_cliente}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                            <button onClick={(event) => handleDatosActual(cliente)} className="text-blue-500 hover:text-blue-700 mr-4">
-                                <FaEdit />
-                            </button>
-                            <button onClick={(event) => handleEliminarDatos(cliente.idcliente, 'api/clientes')} className="text-red-500 hover:text-red-700">
-                                <FaTrash />
-                            </button>
-                        </td>
-                    </tr>
-                    ) ))}
+                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-mono text-right">
+                                    {cliente.identificacion_cliente}
+                                </td>
+                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-serif text-center">
+                                    {cliente.genero_cliente}
+                                </td>
+                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-mono text-right">
+                                    {cliente.edad_cliente}
+                                </td>
+                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-mono text-right">
+                                    {cliente.telefono_cliente}
+                                </td>
+                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-base font-serif text-center">
+                                    {cliente.correo_cliente}
+                                </td>
+                                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <button onClick={(event) => handleDatosActual(cliente)} className="text-blue-500 hover:text-blue-700 mr-4">
+                                        <FaEdit />
+                                    </button>
+                                    <button onClick={(event) => handleEliminarDatos(cliente.idcliente, 'api/clientes')} className="text-red-500 hover:text-red-700">
+                                        <FaTrash />
+                                    </button>
+                                </td>
+                            </tr>
+                        )))}
                 </tbody>
             </table>
+            <Pagination
+                totalItems={totalClientes}
+                itemsPerPage={clientesPorPagina}
+                currentPage={paginaActual}
+                onPageChange={cambiarPagina}
+            />
         </div>
     )
 }

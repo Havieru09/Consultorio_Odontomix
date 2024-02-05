@@ -11,12 +11,16 @@ class PacientesController extends Controller
 {
     public function index()
     {
-        if (!$pacientes = Pacientes::all()) {
-            return response()->json(['errors' => 'No se encuentran pacientes en la base de datos'], 404);
-        }
-        return PacientesResource::collection($pacientes);
-    }
+        $pacientes = Pacientes::paginate(10);
 
+        return response()->json([
+            'data' => PacientesResource::collection($pacientes),
+            'total' => $pacientes->total(),
+            'perPage' => $pacientes->perPage(),
+            'currentPage' => $pacientes->currentPage(),
+            'lastPage' => $pacientes->lastPage(),
+        ]);
+    }
     public function store(PacienteRequest $request)
     {
         $request->validated();
@@ -48,5 +52,4 @@ class PacientesController extends Controller
         $paciente->delete();
         return response()->json(['success' => 'Paciente eliminado'], 200);
     }
-    
 }

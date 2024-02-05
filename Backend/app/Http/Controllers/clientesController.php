@@ -11,10 +11,19 @@ class ClientesController extends Controller
 {
     public function index()
     {
-        if (!$clientes = Clientes::all()) {
-            return response()->json(['errors' => 'No se encuentran clientes en la base de datos'], 404);
-        }
-        return ClientesResource::collection($clientes);
+        $clientes = Clientes::paginate(10);
+
+        return response()->json([
+            'data' => ClientesResource::collection($clientes),
+            'total' => $clientes->total(),
+            'perPage' => $clientes->perPage(),
+            'currentPage' => $clientes->currentPage(),
+            'lastPage' => $clientes->lastPage(),
+        ]);
+        // if (!$clientes = Clientes::all()) {
+        //     return response()->json(['errors' => 'No se encuentran clientes en la base de datos'], 404);
+        // }
+        // return ClientesResource::collection($clientes);
     }
 
     public function store(ClienteRequest $request)

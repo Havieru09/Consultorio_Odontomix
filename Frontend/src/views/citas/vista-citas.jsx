@@ -5,21 +5,28 @@ import Spinner from "../../components/Spinner";
 import useDental from "../../hooks/useDental";
 import { formatearFechaSinHora, formatearHora } from "../../helpers";
 import { FaPlus } from "react-icons/fa";
+import Pagination from "../../components/Pagination";
 
 export default function VistaCitas() {
     const { handleTipoModal, handleClickModal, handleDatosActual, handleCompletarCita, handleEliminarDatos } = useDental();
     const [citas, setCitas] = useState([]);
-
-    const fetcher = () => clienteAxios('api/citas').then(datos => datos.data);
-    const { data, error, isLoading, mutate } = useSWR('api/citas', fetcher);
+    const [paginaActual, setPaginaActual] = useState(1);
+    const [totalDatos, setTotalDatos] = useState(0);
+    const DatosPorPagina = 6;
+    const fetcher = () => clienteAxios(`api/citas?page=${paginaActual}`).then(datos => datos.data);
+    const { data, error, isLoading } = useSWR(`api/citas?page=${paginaActual}`, fetcher);
 
     useEffect(() => {
         handleTipoModal('citas');
         if (data && data.data) {
             setCitas(data.data);
+            setTotalDatos(data.total);
         }
     }, [data, error]);
 
+    const cambiarPagina = (numeroPagina) => {
+        setPaginaActual(numeroPagina);
+    };
 
     const handleEliminarCita = (id) => {
         handleEliminarDatos(id, 'api/citas');
@@ -38,7 +45,7 @@ export default function VistaCitas() {
                     <FaPlus className="mr-2" /> Agregar Cita
                 </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
                 {
                     citas.length === 0 ? (
                         <div className="col-span-full text-center py-5 bg-white rounded-lg shadow">
@@ -75,7 +82,7 @@ export default function VistaCitas() {
                                             >
                                                 {isPending ? 'Completar' : 'Ver consulta'}
                                             </button>
-                                            <button onClick={()=>handleEliminarCita(cita.idcita)} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ${isPending ? '' : 'hidden'}`}>
+                                            <button onClick={() => handleEliminarCita(cita.idcita)} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ${isPending ? '' : 'hidden'}`}>
                                                 Eliminar
                                             </button>
                                         </div>
@@ -88,6 +95,12 @@ export default function VistaCitas() {
                     )
                 }
             </div>
+            <Pagination
+                totalItems={totalDatos}
+                itemsPerPage={DatosPorPagina}
+                currentPage={paginaActual}
+                onPageChange={cambiarPagina}
+            />
         </div>
     );
 
