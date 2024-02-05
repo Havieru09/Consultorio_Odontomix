@@ -44,4 +44,13 @@ class UsuarioController extends Controller
         $usuarios->update($request->all());
         return new UsuarioResource($usuarios);
     }
+
+    public function destroy($idusuario)
+    {
+        if (!$usuarios = Usuario::find($idusuario)) {
+            return response()->json(['errors' => 'No se encuentra el usuario que desea eliminar'], 404);
+        }
+        $usuarios->delete();
+        return new UsuarioResource($usuarios);
+    }
 }
