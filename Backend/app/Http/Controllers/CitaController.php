@@ -11,7 +11,7 @@ class CitaController extends Controller
 {
     public function index()
     {
-        $clientes = Cita::paginate(6);
+        $clientes = Cita::paginate(6)->orderBy('fechahora_cita', 'asc');
 
         return response()->json([
             'data' => CitaResources::collection($clientes),
@@ -40,6 +40,14 @@ class CitaController extends Controller
             return response()->json(['errors' => 'Cita no encontrada'], 404);
         }
         return new CitaResources($clientes);
+    }
+
+    public function showPaciente($idpaciente)
+    {
+        if (!$citas = Cita::where('idpaciente', $idpaciente)->orderBy('fechahora_cita', 'asc')->get()) {
+            return response()->json(['errors' => 'Cita no encontrada'], 404);
+        }
+        return CitaResources::collection($citas);
     }
 
     public function showCitasFechas(Request $request)

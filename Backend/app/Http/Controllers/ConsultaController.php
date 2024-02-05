@@ -11,7 +11,7 @@ class ConsultaController extends Controller
     public function index()
     {
 
-        $consulta = Consulta::paginate(6);
+        $consulta = Consulta::paginate(6)->orderBy('fecha_consulta', 'asc');
 
         return response()->json([
             'data' => ConsultaResource::collection($consulta),
@@ -42,6 +42,14 @@ class ConsultaController extends Controller
         }
 
         return new ConsultaResource($consulta);
+    }
+
+    public function showConsultasPaciente($idpaciente)
+    {
+        if (!$consultas = Consulta::where('idpaciente', $idpaciente)->orderBy('fecha_consulta', 'asc')->get()) {
+            return response()->json(['errors' => 'Cita no encontrada'], 404);
+        }
+        return ConsultaResource::collection($consultas);
     }
 
     public function showConsultasFechas(Request $request)
