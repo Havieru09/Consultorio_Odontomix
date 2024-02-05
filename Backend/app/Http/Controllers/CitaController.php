@@ -50,10 +50,10 @@ class CitaController extends Controller
         $condicion = $request->condicion;
         if ($condicion == 1) {
             $citas = Cita::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->where('estado_cita', 1)->count();
-            return "Tienes un total de $citas citas atendidas";
+            return $citas;
         } else {
             $citas = Cita::whereBetween('fechahora_cita', [$fecha_iniciohora, $fecha_finalhora])->where('estado_cita', 0)->count();
-            return "Tienes un total de $citas citas pendientes";
+            return $citas;
         }
     }
 
