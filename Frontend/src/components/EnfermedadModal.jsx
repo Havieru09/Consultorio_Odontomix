@@ -50,19 +50,6 @@ export default function EnfermedadModal() {
                         ref={enfermedad}
                     />
                 </div>
-                {/* <div className="col-span-2">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descripcion">
-                        Descripción
-                    </label>
-                    <textarea
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                        id="descripcion"
-                        type="text"
-                        placeholder="Descripción"
-                        defaultValue={datosActual.descripcion}
-                        onChange={handleEliminarDatos}
-                    />
-                </div> */}
                 <div className="col-span-2 flex justify-end">
                     <button
                         className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded flex items-center"

@@ -6,22 +6,31 @@ import Spinner from "../../components/Spinner";
 import { formatearFechaSinHora, formatearHora } from "../../helpers";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import FormularioHistorialM from "./formulario-historialM";
+import Pagination from "../../components/Pagination";
 export default function VistaConsultas() {
   const navigate = useNavigate();
   const [consultas, setConsultas] = useState([]);
   const { handleDatosActual, handleCompletarCita, handleTipoModal } = useDental();
-  const fetcher = () => clienteAxios('api/consultas').then(datos => datos.data);
-  const { data, error, isLoading } = useSWR('api/consultas', fetcher);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [totalDatos, setTotalDatos] = useState(0);
+  const DatosPorPagina = 6;
+  const fetcher = () => clienteAxios(`api/consultas?page=${paginaActual}`).then(datos => datos.data);
+  const { data, error, isLoading } = useSWR(`api/consultas?page=${paginaActual}`, fetcher);
 
   const handleRealizarHistorial = (consulta) => {
     localStorage.setItem('IDCONSULTA', consulta.idconsulta);
     navigate('/consultas/historial-medico')
   };
 
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+  };
+
   useEffect(() => {
     // handleTipoModal('citas');
     if (data && data.data) {
       setConsultas(data.data);
+      setTotalDatos(data.total);
     }
   }, [data, error]);
 
@@ -32,7 +41,7 @@ export default function VistaConsultas() {
       <div className="mb-4 mt-4">
         <h3 className="text-gray-600 text-3xl font-medium text-center font-serif">Lista de consultas</h3>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
         {
           consultas.length === 0 ? (
             <div className="col-span-full text-center py-5 bg-white rounded-lg shadow">
@@ -89,6 +98,12 @@ export default function VistaConsultas() {
           )
         }
       </div>
+      <Pagination
+        totalItems={totalDatos}
+        itemsPerPage={DatosPorPagina}
+        currentPage={paginaActual}
+        onPageChange={cambiarPagina}
+      />
     </div>
   )
 }

@@ -1,18 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../config/axios";
 import useSWR from "swr";
+import { useEffect } from "react";
 
 
 export const useAuth = ({ middleware, url }) => {
 
     const navigate = useNavigate();
 
-    const { data: user, error, mutate } = useSWR("api/user", () => 
-        clienteAxios('/api/user', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+    const { data: user, error, mutate } = useSWR("api/usuario", () => 
+        clienteAxios('/api/usuario')
         .then(res => res.data)
         .catch(error => {
             throw Error(error?.response?.data?.errors)
@@ -22,7 +19,8 @@ export const useAuth = ({ middleware, url }) => {
     const login = async (datos, setErrores) => {
         try {
             const { data } = await clienteAxios.post('api/login', datos);
-            console.log(data.user);
+            localStorage.setItem('USUARIO', data.user.nombre_usuario);
+            localStorage.setItem('ROL', data.user.idroles);
             setErrores([]);
             if (data.user) {
                 navigate('/', { replace: true });
@@ -44,7 +42,42 @@ export const useAuth = ({ middleware, url }) => {
         }
     }
 
+    const logout = async() => {
+        try{
+            localStorage.removeItem('USUARIO');
+            localStorage.removeItem('AUTH_TOKEN');
+            await mutate(undefined);
+            setTimeout(() => {
+                navigate('/auth/login');
+            }, 1000);
+        }catch(error) {
+            throw Error(error?.response?.data?.errors)
+        }
+    }
+
+    // useEffect(() => {
+    //     // Verifica primero si user está definido y luego si tiene la propiedad 'data'
+    //     if(user && user.data) {
+    //         if(middleware === 'guest' && (user.data.admin === 1 || user.data.admin === 2 || user.data.admin === 3)) {
+    //             navigate('/');
+    //         }
+    //     }           
+
+    //     if(middleware === 'auth' && !user) {
+    //         navigate('/auth/login');
+    //     }
+    //     // Agregar lógica para manejar cuando haya un error
+    //     if(middleware === 'auth' && error) {
+    //         navigate('/auth/login');
+    //     }
+    // }, [user, error, middleware, navigate, url]);
+
     return {
-        login
+        login,
+        user,
+        error,
+        mutate,
+        logout
+        
     }
 }

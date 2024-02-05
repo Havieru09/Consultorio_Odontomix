@@ -10,11 +10,21 @@ class ConsultaController extends Controller
 {
     public function index()
     {
-        if (!$consulta = Consulta::all()->sortBy('estado_consulta')) {
-            return response()->json(['errors' => 'No se encuentra la consulta'], 404);
-        }
 
-        return ConsultaResource::collection($consulta);
+        $consulta = Consulta::paginate(6);
+
+        return response()->json([
+            'data' => ConsultaResource::collection($consulta),
+            'total' => $consulta->total(),
+            'perPage' => $consulta->perPage(),
+            'currentPage' => $consulta->currentPage(),
+            'lastPage' => $consulta->lastPage(),
+        ]);
+        // if (!$consulta = Consulta::all()->sortBy('estado_consulta')) {
+        //     return response()->json(['errors' => 'No se encuentra la consulta'], 404);
+        // }
+
+        // return ConsultaResource::collection($consulta);
     }
 
     public function store(Request $request)

@@ -99,7 +99,7 @@ const DentalProvider = ({ children }) => {
                 }
             });
 
-            // console.log(response.data.data.numero_ficha);
+            console.log(response.data.data);
 
             const estado_consulta = {
                 estado_consulta: 1
@@ -134,20 +134,19 @@ const DentalProvider = ({ children }) => {
                 title: `Desea completar la cita?`,
                 showDenyButton: true,
                 showCancelButton: true,
-                confirmButtonText: 'Save',
-                denyButtonText: `Don't save`,
+                confirmButtonText: 'Si',
+                denyButtonText: `No completar`,
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     await clienteAxios.put(`${url}/${id}`, cita);
                     const datos = {
                         idcita: cita.idcita,
-                        motivo_consulta: cita.concepto_cita,
-                        fecha_consulta: new Date().toISOString().slice(0, 10) + ' ' + '00:00:00',
+                        motivo_consulta: cita.concepto_cita,                        
                         estado_consulta: 0,
                     }
-                    console.log(datos);
+                    // console.log(datos);
                     const { data: dataCita } = await clienteAxios.post(`api/consultas`, datos);
-                    console.log(dataCita);
+                    // console.log(dataCita);
                     setRefresh(!refresh);
                     Swal.fire('Cita actualizada correctamente!', '', 'success')
                     mutate(url);
@@ -307,7 +306,6 @@ const DentalProvider = ({ children }) => {
     const handleDientes = async (id, url) => {
         try {
             const { data } = await clienteAxios.get(`${url}/${id}`);
-            console.log(data.data);
             setDientes(data.data);
         } catch (error) {
             console.log(error);
@@ -327,6 +325,8 @@ const DentalProvider = ({ children }) => {
             setDientes({});
         }
     }
+
+    
 
     return (
         <DentalContext.Provider
@@ -356,6 +356,7 @@ const DentalProvider = ({ children }) => {
                 setActualizar,
                 actualizarId,
                 setActualizarId,
+                
             }}
         >
             {children}

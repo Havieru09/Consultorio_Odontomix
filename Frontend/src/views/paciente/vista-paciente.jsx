@@ -4,20 +4,28 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import clienteAxios from "../../config/axios";
 import useSWR from 'swr'
 import Spinner from "../../components/Spinner";
+import Pagination from "../../components/Pagination";
 
 export default function VistaPaciente() {
   const {  handleClickModal, handleTipoModal, handleDatosActual, handleEliminarDatos } = useDental();
   const [pacientes, setPacientes] = useState([]);
-  const fetcher = () => clienteAxios('api/pacientes').then(datos => datos.data)
-  const { data, error,isLoading } = useSWR('api/pacientes', fetcher)
-
+  
+  const [paginaActual, setPaginaActual] = useState(1);
+  const pacientesPorPagina = 10;
+  const [totalPacientes, setTotalPacientes] = useState(0);
+  const fetcher = () => clienteAxios(`api/pacientes?page=${paginaActual}`).then(datos => datos.data)
+  const { data, error,isLoading } = useSWR(`api/pacientes?page=${paginaActual}`, fetcher)
   useEffect(() => {
     handleTipoModal('paciente');
     if (data && data.data) {
       setPacientes(data.data);
+      setTotalPacientes(data.total);
     }
   }, [data, error]);
-
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+  };
+        
   if (isLoading) return <Spinner />
 
   return (
@@ -30,7 +38,7 @@ export default function VistaPaciente() {
           <FaPlus className="mr-2" /> Agregar Paciente
         </button>
       </div>
-      <table className="min-w-full leading-normal">
+      <table className="min-w-full leading-normal mb-5">
         <thead>
           <tr>
             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -98,7 +106,14 @@ export default function VistaPaciente() {
                 </tr>
               )))}
         </tbody>
+        
       </table>
+      <Pagination 
+        totalItems={totalPacientes}
+        itemsPerPage={pacientesPorPagina}
+        currentPage={paginaActual}
+        onPageChange={cambiarPagina}
+      />
     </div>
   )
 

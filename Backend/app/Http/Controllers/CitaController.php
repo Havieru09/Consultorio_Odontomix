@@ -11,10 +11,19 @@ class CitaController extends Controller
 {
     public function index()
     {
-        if (!$clientes = Cita::all()->sortBy('estado_cita')) {
-            return response()->json(['errors' => 'No se encuentran las citas en la base de datos'], 404);
-        }
-        return CitaResources::collection($clientes);
+        $clientes = Cita::paginate(6);
+
+        return response()->json([
+            'data' => CitaResources::collection($clientes),
+            'total' => $clientes->total(),
+            'perPage' => $clientes->perPage(),
+            'currentPage' => $clientes->currentPage(),
+            'lastPage' => $clientes->lastPage(),
+        ]);
+        // if (!$clientes = Cita::all()->sortBy('estado_cita')) {
+        //     return response()->json(['errors' => 'No se encuentran las citas en la base de datos'], 404);
+        // }
+        // return CitaResources::collection($clientes);
     }
 
     public function store(CitaRequest $request)

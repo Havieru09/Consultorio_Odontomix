@@ -5,12 +5,14 @@ import useSWR from 'swr';
 import clienteAxios from '../../config/axios';
 import useDental from '../../hooks/useDental';
 import { FaSearch } from 'react-icons/fa';
+import { FcCancel } from "react-icons/fc";
 // import { formatearDinero } from "../../helpers";
 export default function Facturacion() {
 
     const [items, setItems] = useState([]);
     const [num_documento, setNum_documento] = useState('');
     const { handleErrorSweet, handleIngresarDatos, handleEditarDatos } = useDental();
+    const [anuladas, setAnuladas] = useState(false);
     const fetcher = () => clienteAxios('api/item').then(datos => datos.data)
     const { data, isLoading } = useSWR('api/item', fetcher)
     const [concepto, setConcepto] = useState('');
@@ -191,7 +193,7 @@ export default function Facturacion() {
                 descuento_factura: calcularDescuentoTotal(),
                 tiva_factura: calcularIVA(),
                 total_factura: calcularTotal(),
-                concepto_factura : concepto,
+                concepto_factura: concepto,
                 // detalles
             };
             // console.log(factura);
@@ -221,7 +223,6 @@ export default function Facturacion() {
         if (valor) {
             valor = documento.current.value;
         }
-        console.log(valor);
         const documentoFactura = valor;
         if (documentoFactura === '') {
             handleErrorSweet('Debe ingresar un numero de factura');
@@ -236,6 +237,7 @@ export default function Facturacion() {
                 return;
             }
             setIdFactura(response.data.data.idcabecerafactura);
+            setAnuladas(response.data.data.estado_factura === 1);
             // console.log(documentoFactura);
             const cliente = dataClientes.data?.find(c => c.idcliente === response.data.data.idcliente);
             setClienteSeleccionado(cliente);
@@ -279,8 +281,8 @@ export default function Facturacion() {
         const factura = {
             estado_factura: 1,
         };
-        
-        const data = await handleEditarDatos( idFactura,factura, 'api/cabecera', true, false, 'Desea anular la factura?');
+
+        const data = await handleEditarDatos(idFactura, factura, 'api/cabecera', true, false, 'Desea anular la factura?');
         facturaNueva();
     }
 
@@ -290,6 +292,7 @@ export default function Facturacion() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+
             <div className="w-full max-w-6xl bg-white shadow-md rounded px-8 pt-6 pb-8">
                 <div className='flex max-h-40 justify-center items-center'>
                     <div className="flex justify-start">
@@ -307,14 +310,14 @@ export default function Facturacion() {
                 </div>
                 <hr className='my-4' />
                 {/* buscador para numero factura */}
-                <div className='flex justify-center items-center'>
+                <div className='flex flex-col justify-center items-center '>
                     <div className='flex w-1/2 items-center gap-2'>
                         <label className='font-serif font-bold text-base mb-2 w-1/3'>
                             Buscar Factura:
                         </label>
                         <input
                             type="text"
-                            
+
                             className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Ingrese numero de factura"
                             ref={documento}
@@ -323,11 +326,14 @@ export default function Facturacion() {
                             <FaSearch />
                         </button>
                     </div>
+                    <label className={` text-red-500 font-bold py-2 px-4 rounded text-4xl  ${facturaExistente && anuladas ? '' : 'hidden'}`}>
+                        Factura anulada
+                    </label>
                 </div>
                 <hr className='my-4' />
                 <div>
                     <div className="grid grid-cols-2 gap-x-4 mt-8 gap-y-5">
-                    <div className='flex justify-center items-center'>
+                        <div className='flex justify-center items-center'>
                             <label className='font-serif font-bold text-base mb-2 w-1/3'>
                                 N° Factura:
                             </label>
@@ -345,10 +351,10 @@ export default function Facturacion() {
                                 defaultValue={concepto}
                                 onChange={(e) => setConcepto(e.target.value)}
                                 className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                // readOnly
+                            // readOnly
                             />
                         </div>
-                        
+
 
                     </div>
                 </div>
@@ -550,7 +556,7 @@ export default function Facturacion() {
                                 <span className="font-medium">{((1 + detalle.iva / 100) * (detalle.precio * detalle.cantidad) - detalle.descuento_detalle).toFixed(2)}</span>
                             </div>
                         </div>
-                        <div className={`col-span-1 ${facturaExistente ? 'hidden': ''}`}>
+                        <div className={`col-span-1 ${facturaExistente ? 'hidden' : ''}`}>
                             <div className='flex justify-center'>
                                 <button onClick={() => eliminarDetalle(detalle.id)} className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded `}>
                                     <MdDeleteForever />
@@ -586,9 +592,11 @@ export default function Facturacion() {
                         <button onClick={handleEnviarFactura} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? 'hidden' : ''}`}>
                             Guardar
                         </button>
-                        <button onClick={handleAnularFactura} className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
+                        <button onClick={handleAnularFactura} className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${facturaExistente && !anuladas ? '' : 'hidden'}`}>
                             Anular factura
                         </button>
+
+
                         <button onClick={facturaNueva} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
                             Crear nueva factura
                         </button>
@@ -596,7 +604,6 @@ export default function Facturacion() {
                     </div>
                 </div>
             </div>
-
         </div >
     )
 }
