@@ -77,7 +77,6 @@ export default function CitasModal() {
         fechahora_cita: fecha.current.value + ' ' + hora.current.value,
         estado_cita: 0
       };
-      console.log(data);
       if (datosActual.idcita != null) {
         handleEditarDatos(datosActual.idcita, data, 'api/citas');
       } else {        
