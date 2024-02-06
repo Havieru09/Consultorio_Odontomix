@@ -20,8 +20,12 @@ class UsuarioController extends Controller
 
     public function store(Request $request)
     {
+        if(Usuario::where('nombre_usuario', 'ilike', $request->nombre_usuario)->first()){
+            return response()->json(['errors' => 'Ya existe un usuario con ese nombre'], 404);
+        }
+        
         $request->validate([
-            'nombre_usuario' => 'required|unique:usuario',
+            'nombre_usuario' => 'required',
             'password' => 'required',
             'idroles' => 'required',
         ]);
