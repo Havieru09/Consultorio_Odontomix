@@ -43,8 +43,6 @@ export default function VistaCitas() {
             console.log(data.data);
             setCitas(data.data);
         }
-
-
     };
 
 

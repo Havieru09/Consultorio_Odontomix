@@ -17,8 +17,6 @@ export default function Historial_completo() {
     const { data, error, isLoading } = useSWR(`api/historial_medico/${idHistorial}`, fetcher)
     // const [enfermedades, setEnfermedades] = useState([]);
 
-
-
     useEffect(() => {
         if (data && data.data) {
             setHistorial_medico(data.data);
@@ -45,10 +43,6 @@ export default function Historial_completo() {
                 responseType: 'blob' // Importante para recibir un archivo
             });
             
-            // Verificar la respuesta
-            // console.log(response);
-    
-            // Crear un enlace para la descarga
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
     

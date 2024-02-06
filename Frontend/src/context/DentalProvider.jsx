@@ -206,7 +206,6 @@ const DentalProvider = ({ children }) => {
             return partes[0];
         }
         return url;
-
     }
 
 
@@ -338,8 +337,6 @@ const DentalProvider = ({ children }) => {
             setDientes({});
         }
     }
-
-
 
     return (
         <DentalContext.Provider

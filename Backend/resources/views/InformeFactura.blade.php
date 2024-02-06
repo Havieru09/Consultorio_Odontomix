@@ -4,6 +4,18 @@
     <title>Factura</title>
 </head>
 <body>
+    <table class="header-table">
+        <tr>
+            <td><img src="http://localhost:5173/img/logo-sinfondo.png" style="max-height: 100px;" alt="Logo" /></td>
+            <td>
+                <h1 style="font-size: 13px; font-weight: 900;">CENTRO DE ATENCIÓN ODONTOLÓGICA – OD. JUAN MURILLO LLANOS
+                </h1>
+                <h2 style="font-size: 13px">Cdla. Luis Morejón Almeida Manzana A2 Villa 16/ Calle 1 S-O y José de la
+                    Cuadra.</h2>
+                <h3 style="text-align: center">Celular: 0982247948. Bio: https://biolink.info/odontomix</h3>
+            </td>
+        </tr>
+    </table>
     <h1>Factura</h1>
     <p><strong>Número de Documento:</strong> {{ $datos->n_documento }}</p>
     <p><strong>Concepto de Factura:</strong> {{ $datos->concepto_factura }}</p>

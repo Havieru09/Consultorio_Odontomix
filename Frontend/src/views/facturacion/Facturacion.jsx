@@ -19,6 +19,7 @@ export default function Facturacion() {
     // const concepto = createRef();
     const documento = createRef();
     // const [datosFactura, setDatosFactura] = useState([]);
+    const [desactivar, setDesactivar] = useState(false);
     const [facturaExistente, setFacturaExistente] = useState(false);
     const [idFactura, setIdFactura] = useState(0);
     const [detalles, setDetalles] = useState([]);
@@ -34,6 +35,32 @@ export default function Facturacion() {
 
         }
     }
+
+    const printDocument = async () => {
+
+        try {
+            setDesactivar(true);
+            const response = await clienteAxios.get(`api/informe_factura/${num_documento}`, {
+                responseType: 'blob' // Importante para recibir un archivo
+            });
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.setAttribute('download', `Factura${num_documento}.pdf`); // Nombre de archivo por defecto
+            document.body.appendChild(link);
+            link.click();
+
+            // Limpieza después de la descarga
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            setDesactivar(false);
+        } catch (error) {
+            // console.log(error.response);
+            handleErrorSweet('No se pudo generar el informe, intente nuevamente');
+        }
+    };
 
     const agregarDetalle = () => {
         const nuevoDetalle = {
@@ -599,6 +626,10 @@ export default function Facturacion() {
 
                         <button onClick={facturaNueva} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
                             Crear nueva factura
+                        </button>
+
+                        <button onClick={printDocument} disabled={desactivar} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${facturaExistente ? '' : 'hidden'}`}>
+                            {desactivar ? 'Cargando el documento' : 'Imprimir'}
                         </button>
 
                     </div>
