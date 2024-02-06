@@ -29,19 +29,20 @@ export default function Vistacliente() {
     const cambiarPagina = (numeroPagina) => {
         setPaginaActual(numeroPagina);
     };
-    
+
     const handleBuscarCliente = () => {
         if (terminoBusqueda != '') {
             clienteAxios.get(`api/cliente/${terminoBusqueda}`)
-            .then((respuesta) => {
-                if (respuesta.data.data != undefined) {
-                    setClientes([respuesta.data.data])
-                }
-            })
-            .catch((error) => {
-                handleErrorSweet('No se encontró ningún Cliente con esa identificación');
-            });
-        }else{
+                .then((respuesta) => {
+                    if (respuesta.data.data != undefined) {
+                        setClientes([respuesta.data.data])
+                        setTotalClientes(1);
+                    }
+                })
+                .catch((error) => {
+                    handleErrorSweet('No se encontró ningún Cliente con esa identificación');
+                });
+        } else {
             console.log(data.data);
             setClientes(data.data);
         }
@@ -55,12 +56,12 @@ export default function Vistacliente() {
                 <h3 className="text-gray-600 text-3xl font-medium text-center font-serif">Lista de Clientes</h3>
             </div>
             <div className="flex justify-between mb-4">
-            <div>
+                <div>
                     <input
                         type="text"
                         value={terminoBusqueda}
                         onChange={(e) => setTerminoBusqueda(e.target.value)}
-                        placeholder="Identificación pacientes..."
+                        placeholder="Identificación Cliente..."
                         className="p-2 border-gray-200 border rounded-lg w-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     />
                     <button onClick={handleBuscarCliente} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2'>

@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import useDental from "../../hooks/useDental";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus, FaSearch, FaTrash } from "react-icons/fa";
 import clienteAxios from "../../config/axios";
 import useSWR from 'swr'
 import Spinner from "../../components/Spinner";
 import Pagination from "../../components/Pagination";
 
 export default function VistaPaciente() {
-  const {  handleClickModal, handleTipoModal, handleDatosActual, handleEliminarDatos } = useDental();
+  const { handleClickModal, handleTipoModal, handleDatosActual, handleEliminarDatos } = useDental();
   const [pacientes, setPacientes] = useState([]);
-  
+  const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
   const pacientesPorPagina = 10;
   const [totalPacientes, setTotalPacientes] = useState(0);
   const fetcher = () => clienteAxios(`api/pacientes?page=${paginaActual}`).then(datos => datos.data)
-  const { data, error,isLoading } = useSWR(`api/pacientes?page=${paginaActual}`, fetcher)
+  const { data, error, isLoading } = useSWR(`api/pacientes?page=${paginaActual}`, fetcher)
   useEffect(() => {
     handleTipoModal('paciente');
     if (data && data.data) {
@@ -25,7 +25,24 @@ export default function VistaPaciente() {
   const cambiarPagina = (numeroPagina) => {
     setPaginaActual(numeroPagina);
   };
-        
+
+  const handleBuscarPaciente = () => {
+    if (terminoBusqueda != '') {
+      clienteAxios.get(`api/paciente/${terminoBusqueda}`)
+        .then((respuesta) => {
+          if (respuesta.data.data != undefined) {
+            setPacientes([respuesta.data.data])
+            setTotalPacientes(1);
+          }
+        })
+        .catch((error) => {
+          handleErrorSweet('No se encontró ningún Cliente con esa identificación');
+        });
+    } else {
+      setPacientes(data.data);
+    }
+  };
+
   if (isLoading) return <Spinner />
 
   return (
@@ -33,7 +50,19 @@ export default function VistaPaciente() {
       <div className="mb-4 mt-4">
         <h3 className="text-gray-600 text-3xl font-medium text-center font-serif">Lista de Pacientes</h3>
       </div>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between mb-4">
+        <div>
+          <input
+            type="text"
+            value={terminoBusqueda}
+            onChange={(e) => setTerminoBusqueda(e.target.value)}
+            placeholder="Identificación Paciente..."
+            className="p-2 border-gray-200 border rounded-lg w-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+          />
+          <button onClick={handleBuscarPaciente} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2'>
+            <FaSearch />
+          </button>
+        </div>
         <button onClick={handleClickModal} className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded flex items-center">
           <FaPlus className="mr-2" /> Agregar Paciente
         </button>
@@ -106,9 +135,9 @@ export default function VistaPaciente() {
                 </tr>
               )))}
         </tbody>
-        
+
       </table>
-      <Pagination 
+      <Pagination
         totalItems={totalPacientes}
         itemsPerPage={pacientesPorPagina}
         currentPage={paginaActual}
