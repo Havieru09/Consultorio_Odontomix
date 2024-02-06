@@ -83,7 +83,7 @@ const DentalProvider = ({ children }) => {
             const { data: datosPreguntas } = await clienteAxios.post(`api/preguntas`, Preguntas);
             const { data: datosExamenes } = await clienteAxios.post(`api/examen_extraoral`, Examenes);
             const { data: datosExamenIntraoral } = await clienteAxios.post(`api/examen_intraoral`, inputExamenIntraoral);
-            
+
             let formData = new FormData();
             formData.append('idpaciente', idPaciente);
             formData.append('idconsulta', idConsulta);
@@ -105,10 +105,10 @@ const DentalProvider = ({ children }) => {
                 estado_consulta: 1
             }
 
-            handleEditarDatos(idconsulta, estado_consulta, `api/consultas`, false,false);
+            handleEditarDatos(idconsulta, estado_consulta, `api/consultas`, false, false);
 
             toast.info(`Datos ingresados correctamente`);
-            
+
             navigate(`/odontograma/creacion-odontograma/${response.data.data.numero_ficha}`)
         } catch (error) {
 
@@ -141,7 +141,7 @@ const DentalProvider = ({ children }) => {
                     await clienteAxios.put(`${url}/${id}`, cita);
                     const datos = {
                         idcita: cita.idcita,
-                        motivo_consulta: cita.concepto_cita,                        
+                        motivo_consulta: cita.concepto_cita,
                         estado_consulta: 0,
                     }
                     // console.log(datos);
@@ -183,6 +183,7 @@ const DentalProvider = ({ children }) => {
                 if (modal) {
                     handleClickModal();
                 }
+                url = handleVerificarUrl(url);
                 mutate(url);
                 return data;
             }
@@ -195,8 +196,17 @@ const DentalProvider = ({ children }) => {
                 text: mensajesError[0]
             })
         }
+    }
+
+    const handleVerificarUrl = (url) => {
+        if (url.includes('?page')) {
+            const partes = url.split('?page');
+            return partes[0];
+        }
+        return url;
 
     }
+
 
     const handleErrores = (error) => {
         let mensajesError = [];
@@ -215,11 +225,12 @@ const DentalProvider = ({ children }) => {
         const actualizarDatos = async () => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
+                url = handleVerificarUrl(url);
                 mutate(url);
                 setRefresh((prevRefresh) => !prevRefresh);
                 Swal.fire('Cambios Guardados!', '', 'success');
                 toast.info(`Datos actualizado correctamente`);
-                if (modal){handleClickModal();}
+                if (modal) { handleClickModal(); }
 
             } catch (error) {
                 console.log(error);
@@ -254,7 +265,6 @@ const DentalProvider = ({ children }) => {
             }
         } catch (error) {
             console.error(error);
-            // Manejo adicional de errores si es necesario
         }
     };
 
@@ -288,8 +298,8 @@ const DentalProvider = ({ children }) => {
                         setRefresh(!refresh);
                         mutate(url);
                     }, 1000);
-                    
-                    
+
+
                     Swal.fire(
                         'Eliminado!',
                         'Los datos fueron eliminados con exito.',
@@ -297,10 +307,10 @@ const DentalProvider = ({ children }) => {
                     )
                 }
             })
-        }else{
+        } else {
             clienteAxios.delete(`${url}/${id}`);
             mutate(url);
-        }        
+        }
     }
 
     const handleDientes = async (id, url) => {
@@ -316,7 +326,7 @@ const DentalProvider = ({ children }) => {
     const handleEnvioMail = async (datos) => {
         try {
             console.log(datos);
-            
+
             await clienteAxios.post(`api/envioCorreo`, datos);
             toast.info(`Correo enviado correctamente`);
             // setDientes(data.data);
@@ -326,7 +336,7 @@ const DentalProvider = ({ children }) => {
         }
     }
 
-    
+
 
     return (
         <DentalContext.Provider
@@ -356,7 +366,7 @@ const DentalProvider = ({ children }) => {
                 setActualizar,
                 actualizarId,
                 setActualizarId,
-                
+
             }}
         >
             {children}
