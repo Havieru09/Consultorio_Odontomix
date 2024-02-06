@@ -50,10 +50,16 @@ class ConsultaController extends Controller
     {
         $identifiacion = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first();
 
-        if (!$consultas = Consulta::where('idpaciente', $identifiacion->idpaciente)->orderBy('fecha_consulta', 'asc')->paginate(6)->get()) {
+        if (!$consultas = Consulta::where('idpaciente', $identifiacion->idpaciente)->orderBy('fecha_consulta', 'asc')->paginate(6)) {
             return response()->json(['errors' => 'Cita no encontrada'], 404);
         }
-        return ConsultaResource::collection($consultas);
+        return response()->json([
+            'data' => ConsultaResource::collection($consultas),
+            'total' => $consultas->total(),
+            'perPage' => $consultas->perPage(),
+            'currentPage' => $consultas->currentPage(),
+            'lastPage' => $consultas->lastPage(),
+        ]);
     }
 
     public function showConsultasFechas(Request $request)
