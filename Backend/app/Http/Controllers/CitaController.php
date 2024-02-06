@@ -48,10 +48,16 @@ class CitaController extends Controller
     {
         $identifiacion = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first();
 
-        if (!$citas = Cita::where('idpaciente', $identifiacion->idpaciente)->orderBy('fechahora_cita', 'asc')->get()) {
+        if (!$citas = Cita::where('idpaciente', $identifiacion->idpaciente)->orderBy('fechahora_cita', 'asc')->paginate(6)) {
             return response()->json(['errors' => 'Cita no encontrada'], 404);
         }
-        return CitaResources::collection($citas);
+        return response()->json([
+            'data' => CitaResources::collection($citas),
+            'total' => $citas->total(),
+            'perPage' => $citas->perPage(),
+            'currentPage' => $citas->currentPage(),
+            'lastPage' => $citas->lastPage(),
+        ]);
     }
 
     public function showCitasFechas(Request $request)
