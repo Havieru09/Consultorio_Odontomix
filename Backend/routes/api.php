@@ -96,6 +96,7 @@ Route::post('logout', [AuthController::class, 'Logout']);
 //API CONTABLE
 Route::apiResource('detalle', DetalleController::class);
 Route::apiResource('cabecera', CabeceraController::class);
+Route::get('informe_factura/{n_documento}', [CabeceraController::class, 'informe']);
 
 //API MEDICA
 Route::apiResource('historial_medico', Historial_ClinicoController::class);

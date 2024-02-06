@@ -52,10 +52,7 @@ class Historial_ClinicoController extends Controller
             ->with(['examen_intraoral.lengua'])->with(['examen_intraoral.paladar_blando'])->with(['examen_intraoral.paladar_duro'])
             ->with(['examen_intraoral.reborde'])->with(['examen_intraoral.oclusion'])->with(['pregunta'])
             ->where('numero_ficha', $numero_ficha)->first();
-        // return response()->json($datos);
-        // dd($datos->consulta->cita->concepto_cita);
         $datos = ['datos' => $datos];
-        // dd($datos);
         $pdf = FacadePdf::loadView('InformeHistorial', $datos);
         return $pdf->download('InformeHistorial.pdf');
     }

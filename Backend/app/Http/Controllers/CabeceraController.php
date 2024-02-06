@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\CabeceraResource;
 use App\Models\Cabecera;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class CabeceraController extends Controller
 {
@@ -27,6 +28,15 @@ class CabeceraController extends Controller
             return response()->json(['errors'=>'No se encuentra un registro'],404);
         }
         return new CabeceraResource($cabecera);
+    }
+
+    public function informe($n_documento)
+    {
+        $datos = Cabecera::with(['detalle'])->with(['cliente'])->where('n_documento', $n_documento)->first();
+        // dd($datos->detalle->item);
+        $datos = ['datos' => $datos];
+        $pdf = FacadePdf::loadView('InformeFactura', $datos);
+        return $pdf->download('InformeFactura.pdf');
     }
 
     public function update(Request $request, $n_documento)
