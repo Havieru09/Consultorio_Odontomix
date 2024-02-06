@@ -46,9 +46,9 @@ class ConsultaController extends Controller
         return new ConsultaResource($consulta);
     }
 
-    public function showConsultasPaciente($ididentificacion)
+    public function showConsultasPaciente($identificacion_paciente)
     {
-        $identifiacion = Pacientes::where('ididentificacion', $ididentificacion)->first();
+        $identifiacion = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first();
 
         if (!$consultas = Consulta::where('idpaciente', $identifiacion->idpaciente)->orderBy('fecha_consulta', 'asc')->get()) {
             return response()->json(['errors' => 'Cita no encontrada'], 404);

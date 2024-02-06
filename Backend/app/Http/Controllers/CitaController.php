@@ -44,9 +44,9 @@ class CitaController extends Controller
         return new CitaResources($clientes);
     }
 
-    public function showPaciente($ididentificacion)
+    public function showPaciente($identificacion_paciente)
     {
-        $identifiacion = Pacientes::where('ididentificacion', $ididentificacion)->first();
+        $identifiacion = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first();
 
         if (!$citas = Cita::where('idpaciente', $identifiacion->idpaciente)->orderBy('fechahora_cita', 'asc')->get()) {
             return response()->json(['errors' => 'Cita no encontrada'], 404);
