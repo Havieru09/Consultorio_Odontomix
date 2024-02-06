@@ -36,6 +36,9 @@ class Historial_ClinicoController extends Controller
             $historial->save();
         } else {
             $archivo = null;
+            $historial->fill($request->all());
+            $historial->save();
+            return new Historial_ClinicoResource($historial);
         }
         return new Historial_ClinicoResource($historial);
     }
