@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Consulta;
 use App\Http\Resources\ConsultaResource;
+use App\Models\Pacientes;
+use App\Models\Tipo_Identificacion;
 
 class ConsultaController extends Controller
 {
@@ -44,9 +46,11 @@ class ConsultaController extends Controller
         return new ConsultaResource($consulta);
     }
 
-    public function showConsultasPaciente($idpaciente)
+    public function showConsultasPaciente($ididentificacion)
     {
-        if (!$consultas = Consulta::where('idpaciente', $idpaciente)->orderBy('fecha_consulta', 'asc')->get()) {
+        $identifiacion = Pacientes::where('ididentificacion', $ididentificacion)->first();
+
+        if (!$consultas = Consulta::where('idpaciente', $identifiacion->idpaciente)->orderBy('fecha_consulta', 'asc')->get()) {
             return response()->json(['errors' => 'Cita no encontrada'], 404);
         }
         return ConsultaResource::collection($consultas);

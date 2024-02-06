@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CitaResources;
 use App\Models\Cita;
+use App\Models\Pacientes;
 use App\Http\Requests\CitaRequest;
 use Illuminate\Http\Request;
 
@@ -43,9 +44,11 @@ class CitaController extends Controller
         return new CitaResources($clientes);
     }
 
-    public function showPaciente($idpaciente)
+    public function showPaciente($ididentificacion)
     {
-        if (!$citas = Cita::where('idpaciente', $idpaciente)->orderBy('fechahora_cita', 'asc')->get()) {
+        $identifiacion = Pacientes::where('ididentificacion', $ididentificacion)->first();
+
+        if (!$citas = Cita::where('idpaciente', $identifiacion->idpaciente)->orderBy('fechahora_cita', 'asc')->get()) {
             return response()->json(['errors' => 'Cita no encontrada'], 404);
         }
         return CitaResources::collection($citas);
