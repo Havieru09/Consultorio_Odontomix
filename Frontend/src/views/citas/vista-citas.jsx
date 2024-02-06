@@ -4,11 +4,13 @@ import useSWR from 'swr';
 import Spinner from "../../components/Spinner";
 import useDental from "../../hooks/useDental";
 import { formatearFechaSinHora, formatearHora } from "../../helpers";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import Pagination from "../../components/Pagination";
+import { MdOutlineContentPasteSearch } from "react-icons/md";
 
 export default function VistaCitas() {
-    const { handleTipoModal, handleClickModal, handleDatosActual, handleCompletarCita, handleEliminarDatos } = useDental();
+    const [terminoBusqueda, setTerminoBusqueda] = useState('');
+    const { handleTipoModal, handleClickModal, handleDatosActual, handleCompletarCita, handleEliminarDatos, handleErrorSweet } = useDental();
     const [citas, setCitas] = useState([]);
     const [paginaActual, setPaginaActual] = useState(1);
     const [totalDatos, setTotalDatos] = useState(0);
@@ -28,6 +30,25 @@ export default function VistaCitas() {
         setPaginaActual(numeroPagina);
     };
 
+    const handleBuscarCita = () => {
+        // consultar la API
+        if (terminoBusqueda != '') {
+            clienteAxios.get(`api/citas_paciente/${terminoBusqueda}`)
+            .then((respuesta) => {
+                setCitas(respuesta.data.data);
+            })
+            .catch((error) => {
+                handleErrorSweet('No se encontró ningún paciente con esa identificación');
+            });
+        }else{
+            console.log(data.data);
+            setCitas(data.data);
+        }
+
+
+    };
+
+
     const handleEliminarCita = (id) => {
         handleEliminarDatos(id, 'api/citas');
     };
@@ -40,7 +61,19 @@ export default function VistaCitas() {
             <div className="mb-4 mt-4">
                 <h3 className="text-gray-600 text-3xl font-medium text-center font-serif">Lista de Citas</h3>
             </div>
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-between mb-4">
+                <div>
+                    <input
+                        type="text"
+                        value={terminoBusqueda}
+                        onChange={(e) => setTerminoBusqueda(e.target.value)}
+                        placeholder="Identificación pacientes..."
+                        className="p-2 border-gray-200 border rounded-lg w-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    />
+                    <button onClick={handleBuscarCita} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2'>
+                        <FaSearch />
+                    </button>
+                </div>
                 <button onClick={handleClickModal} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
                     <FaPlus className="mr-2" /> Agregar Cita
                 </button>

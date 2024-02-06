@@ -107,7 +107,7 @@ export default function Inicio() {
       const { data: dataCantidadConsulta } = await clienteAxios.get(`api/informe_consultas_condicion`, {
         params: { fecha1: fechaDesde, fecha2: fechaHasta }
       });
-      console.log({fecha1: fechaDesde, fecha2: fechaHasta});
+      console.log({ fecha1: fechaDesde, fecha2: fechaHasta });
       setConsultas(dataCantidadConsulta);
       procesarDatosConsultas(data.data);
     } catch (error) {
@@ -154,6 +154,8 @@ export default function Inicio() {
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="FechaH">Fecha hasta</label>
           <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="FechaH" type="date" value={fechaHasta} onChange={(e) => setFechaHasta(e.target.value)} />
         </div>
+      </div>
+      <div className="flex justify-center gap-5 w-full mt-4">
         <button onClick={obtenerDatosGrafico} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar Gráfico citas</button>
         <button onClick={obtenerDatosGraficoConsultas} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar Gráfico consultas</button>
       </div>
@@ -167,7 +169,7 @@ export default function Inicio() {
       </div>
       <div>
         {/*2 cards un de cantidad de citas pendientes y otra de cantidad consulta pendientes*/}
-        <div className="flex justify-around w-full mt-4">
+        <div className="flex justify-around w-full mt-9">
           <div className="w-1/3">
             <div className="flex flex-col justify-center items-center bg-indigo-50 rounded-xl p-5">
               <p className=" text-2xl font-medium text-center font-serif">Citas pendientes</p>
@@ -177,7 +179,7 @@ export default function Inicio() {
             </div>
           </div>
           <div className="w-1/3">
-          <div className="flex flex-col justify-center items-center bg-indigo-50 rounded-xl p-5">
+            <div className="flex flex-col justify-center items-center bg-indigo-50 rounded-xl p-5">
               <p className="text-2xl font-medium text-center font-serif">Consultas pendientes</p>
               <div className="w-1/3">
 

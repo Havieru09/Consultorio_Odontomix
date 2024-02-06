@@ -37,40 +37,6 @@ export default function odontograma() {
         setNoExistePaciente(!pacienteExiste);
     };
 
-    const printDocument = () => {
-        const input = document.getElementById('divToPrint');
-        
-        window.scrollTo(0, 0);
-
-        html2canvas(input, {
-            scale: 1.5,
-            windowHeight: input.scrollHeight,
-        }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'letter');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth() - 1.5;
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            let heightLeft = pdfHeight;
-            
-            let position = -10; // Prueba con diferentes valores si es necesario
-
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-            heightLeft -= pdf.internal.pageSize.getHeight();
-
-            while (heightLeft >= 0) {
-                position = heightLeft - pdfHeight - 10;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-                heightLeft -= pdf.internal.pageSize.getHeight();
-            }
-
-            pdf.save('download.pdf');
-        });
-    };
-
-
-
     const fetcher = () => clienteAxios('api/ubicacion_dental').then(datos => datos.data)
     const { data: Datosdientes, isLoading } = useSWR('api/ubicacion_dental', fetcher)
 

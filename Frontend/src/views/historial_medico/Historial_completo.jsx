@@ -4,9 +4,11 @@ import React, { useState, useEffect } from 'react'
 import Spinner from '../../components/Spinner';
 import clienteAxios from '../../config/axios';
 import useSWR from 'swr';
+import useDental from '../../hooks/useDental';
 
 
 export default function Historial_completo() {
+    const { handleErrorSweet } = useDental();
     const [historial_medico, setHistorial_medico] = useState([]);
     const idHistorial = localStorage.getItem('IDHISTORIAL');
     const [desactivar, setDesactivar] = useState(false);
@@ -44,7 +46,7 @@ export default function Historial_completo() {
             });
             
             // Verificar la respuesta
-            console.log(response);
+            // console.log(response);
     
             // Crear un enlace para la descarga
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -60,7 +62,8 @@ export default function Historial_completo() {
             window.URL.revokeObjectURL(url);
             setDesactivar(false);
         } catch (error) {
-            console.error("Error al descargar el archivo: ", error);
+            // console.log(error.response);
+            handleErrorSweet('No se pudo generar el informe, intente nuevamente');
         }
     };
     
@@ -87,7 +90,7 @@ export default function Historial_completo() {
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            console.error('Error al descargar el archivo:', error);
+            handleErrorSweet('No hay archivo para descargar');
         }
     };
 
@@ -285,7 +288,7 @@ export default function Historial_completo() {
                         <label className='border-b-2 font-serif font-bold text-center'>Archivo subido</label>
                         <img className='w-1/2' src={`${historial_medico.URL}`} alt="" />
                         <label className='font-serif font-bold text-center text-xl border-b-4'>Nombre del archivo</label>
-                        <label className='font-serif font-bold text-center'>{historial_medico?.radiografia_historial || ''}</label>
+                        <label className='font-serif font-bold text-center'>{historial_medico?.radiografia_historial == 'null' ? 'Sin documento': historial_medico?.radiografia_historial}</label>
                     </div>
                     
                     <div className='flex justify-around w-full'>

@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 
 export default function Sidebar() {
   const { logout, user } = useAuth({ middleware: 'auth' });
+  const [rol, setRol] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,6 +15,7 @@ export default function Sidebar() {
     if (!localStorage.getItem('USUARIO')) {
       navigate('/auth/login');
     }
+    setRol(localStorage.getItem('ROL'));
   }, [user, navigate]);
 
   const location = useLocation();
@@ -77,7 +79,7 @@ export default function Sidebar() {
         </Link>
         <ul>
 
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol == 2 || rol == 1 ? '': 'hidden'}`}>
             <button onClick={() => handleMenuClick('crear')} className={`flex flex-1 items-center w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/vista') ? 'bg-cyan-600' : (activeMenu === 'crear' ? 'bg-cyan-600' : '')}`}>Clientes-Pacientes {activeMenu === 'crear' ? <AiOutlineCaretUp className='ml-9' /> : <AiOutlineCaretDown className='ml-9' />}</button>
 
             {(activeMenu === 'crear' && (
@@ -88,43 +90,42 @@ export default function Sidebar() {
             ))}
           </li>
 
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol == 2 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('citas')} to="/citas/lista-citas" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${activeMenu == 'citas' ? 'bg-cyan-600' : ''}`}>Citas
             </Link>
           </li>
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol == 3 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('consultas')} to="/consultas/lista-consultas" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/consultas') ? 'bg-cyan-600' : ''}`}>
               Consultas
             </Link>
           </li>
-          <li className='mb-2'>
-            {/* <li className={`mb-2  ${}`}> */}
+          <li className={`mb-2 ${rol == 3 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('lista-historial')} to="/historial/lista-historial" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/lista-historial') ? 'bg-cyan-600' : ''}`}>
               Historial Médico
             </Link>
           </li>
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol == 3 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('odontograma')} to="/odontograma/creacion-odontograma" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/odontograma') ? 'bg-cyan-600' : ''}`}>
               Odontograma
             </Link>
           </li>
 
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol == 2 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('facturacion')} to="/factura/facturacion" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/facturacion') ? 'bg-cyan-600' : ''}`}>
               Facturación
             </Link>
           </li>
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol == 2 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('enfermedades')} to="/enfermedades/lista-enfermedades" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/enfermedades') ? 'bg-cyan-600' : ''}`}>
               Enfermedades
             </Link>
           </li>
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol == 3 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('condiciones')} to="/condiciones/lista-condiciones" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/condiciones') ? 'bg-cyan-600' : ''}`}>
               Condiciones Dentales
             </Link>
           </li>
-          <li className='mb-2'>
+          <li className={`mb-2 ${rol != 1 ? 'hidden': ''}`}>
             <Link onClick={() => handleMenuClick('/lista-user')} to="/usuarios/lista-user" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/lista-user') ? 'bg-cyan-600' : ''}`}>
               Usuarios
             </Link>

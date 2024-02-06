@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 import useDental from '../../hooks/useDental';
 import MiniSpinner from '../../components/MiniSpiner';
-// import useDental from '../../context/DentalContext';
 
 export default function FormularioHistorialM() {
     

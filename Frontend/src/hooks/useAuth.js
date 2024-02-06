@@ -45,7 +45,7 @@ export const useAuth = ({ middleware, url }) => {
     const logout = async() => {
         try{
             localStorage.removeItem('USUARIO');
-            localStorage.removeItem('AUTH_TOKEN');
+            localStorage.removeItem('ROL');
             await mutate(undefined);
             setTimeout(() => {
                 navigate('/auth/login');

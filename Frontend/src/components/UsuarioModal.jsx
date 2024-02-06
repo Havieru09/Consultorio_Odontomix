@@ -23,10 +23,6 @@ export default function UsuarioModal() {
     const handleEnviarUsuario = (e) => {
         e.preventDefault()
 
-        // if (!validarCampos()) {
-        //     return;
-        // }
-
         if (username.current.value.trim() === '') {
             handleErrorSweet('El nombre de usuario es obligatorio');
             return;
@@ -62,7 +58,6 @@ export default function UsuarioModal() {
             }
 
         }
-        // console.log(datosActual);
     }, [data, error]);
 
     const rolPorDefecto = datosActual && datosActual.roles && roles.length > 0
