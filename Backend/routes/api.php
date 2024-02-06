@@ -57,7 +57,9 @@ Route::apiResource('identificacion', IdentificacionController::class);
 Route::apiResource('clientes', ClientesController::class);
 Route::apiResource('pacientes', PacientesController::class);
 Route::apiResource('citas', CitaController::class);
+Route::get('citas_fechas', [CitaController::class, 'showCitasFechas']);
 Route::apiResource('consultas', ConsultaController::class);
+Route::get('citas_paciente/{idpaciente}', [CitaController::class, 'showPaciente']);
 Route::apiResource('item', ItemController::class);
 Route::post('envioCorreo', [EnvioCorreoController::class, 'envioCorreo']);
 

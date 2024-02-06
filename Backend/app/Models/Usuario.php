@@ -33,6 +33,9 @@ class Usuario extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
         static::creating(function ($contraseña) {
             $contraseña->password = Hash::make($contraseña->password);
         });
+        static::updating(function ($contraseña) {
+            $contraseña->password = Hash::make($contraseña->password);
+        });
     }
 
     public function getAuthIdentifierName()

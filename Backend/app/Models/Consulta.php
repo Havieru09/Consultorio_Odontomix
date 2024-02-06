@@ -25,4 +25,13 @@ class Consulta extends Model
         return $this->belongsTo(Cita::class, 'idcita', 'idcita');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+        date_default_timezone_set('America/Guayaquil');
+        static::creating(function ($query) {
+            $query->fecha_consulta = now();
+        });
+    }
+
 }

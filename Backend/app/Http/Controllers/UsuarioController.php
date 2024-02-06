@@ -21,7 +21,7 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre_usuario' => 'required',
+            'nombre_usuario' => 'required|unique:usuario',
             'password' => 'required',
             'idroles' => 'required',
         ]);
