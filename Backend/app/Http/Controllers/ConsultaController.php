@@ -29,7 +29,7 @@ class ConsultaController extends Controller
 
     public function store(Request $request)
     {
-        if (!$request->idcita || !$request->motivo_consulta || !$request->fecha_consulta) {
+        if (!$request->idcita || !$request->motivo_consulta) {
             return response()->json(['errors' => 'Faltan datos para procesar la solicitud'], 400);
         }
         return new ConsultaResource(Consulta::create($request->all()));
