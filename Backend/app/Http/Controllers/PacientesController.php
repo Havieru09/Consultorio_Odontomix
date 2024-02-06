@@ -35,6 +35,14 @@ class PacientesController extends Controller
         return new PacientesResource($paciente);
     }
 
+    public function showPaciente($identificacion_paciente)
+    {
+        if (!$paciente = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first()) {
+            return response()->json(['errors' => 'Paciente no encontrado'], 404);
+        }
+        return new PacientesResource($paciente);
+    }
+
     public function update(Request $request, $idpaciente)
     {
         if (!$paciente = Pacientes::find($idpaciente)) {

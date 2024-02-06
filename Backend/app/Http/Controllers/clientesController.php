@@ -40,6 +40,14 @@ class ClientesController extends Controller
         return new ClientesResource($clientes);
     }
 
+    public function showCliente($identificacion_cliente)
+    {
+        if (!$clientes = Clientes::where('identificacion_cliente', $identificacion_cliente)->first()) {
+            return response()->json(['errors' => 'Cliente no encontrado'], 404);
+        }
+        return new ClientesResource($clientes);
+    }
+
     public function update(Request $request, $idcliente)
     {
         if (!$clientes = Clientes::find($idcliente)) {
