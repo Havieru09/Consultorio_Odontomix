@@ -11,7 +11,7 @@ class ConsultaController extends Controller
     public function index()
     {
 
-        $consulta = Consulta::paginate(6)->orderBy('fecha_consulta', 'asc');
+        $consulta = Consulta::orderBy('fecha_consulta', 'asc')->paginate(6);
 
         return response()->json([
             'data' => ConsultaResource::collection($consulta),

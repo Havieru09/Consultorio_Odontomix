@@ -11,7 +11,8 @@ class CitaController extends Controller
 {
     public function index()
     {
-        $clientes = Cita::paginate(6)->orderBy('fechahora_cita', 'asc');
+
+        $clientes = Cita::orderBy('fechahora_cita', 'asc')->paginate(6);
 
         return response()->json([
             'data' => CitaResources::collection($clientes),
