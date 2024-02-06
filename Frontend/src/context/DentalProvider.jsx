@@ -3,10 +3,10 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
 import clienteAxios from '../config/axios';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 const DentalContext = createContext();
 const DentalProvider = ({ children }) => {
-
+    const { mutate } = useSWRConfig();
     const [modal, setModal] = useState(false);
     const [datosActual, setDatosActual] = useState({});
     const [datosId, setDatosId] = useState({});
@@ -93,6 +93,7 @@ const DentalProvider = ({ children }) => {
             formData.append('idexamen_intraoral', datosExamenIntraoral.data.idintraoral ? datosExamenIntraoral.data.idintraoral : '');
             formData.append('estado_historial', 0);
             formData.append('radiografia_historial', archivo ? archivo : null);
+            console.log(formData);
             const response = await clienteAxios.post('api/historial_medico', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -109,6 +110,7 @@ const DentalProvider = ({ children }) => {
 
             toast.info(`Datos ingresados correctamente`);
 
+            console.log(response.data);
             navigate(`/odontograma/creacion-odontograma/${response.data.data.numero_ficha}`)
         } catch (error) {
 
@@ -226,6 +228,7 @@ const DentalProvider = ({ children }) => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
                 url = handleVerificarUrl(url);
+                console.log(url);
                 mutate(url);
                 setRefresh((prevRefresh) => !prevRefresh);
                 Swal.fire('Cambios Guardados!', '', 'success');

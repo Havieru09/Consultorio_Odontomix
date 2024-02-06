@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa'; // Importando íconos de Font Awesome
+import { FaEdit, FaTrash, FaPlus, FaSearch } from 'react-icons/fa'; // Importando íconos de Font Awesome
 import useDental from "../../hooks/useDental";
 import clienteAxios from "../../config/axios";
 import useSWR from 'swr'
@@ -9,8 +9,9 @@ import Pagination from '../../components/Pagination';
 
 export default function Vistacliente() {
 
-    const { handleClickModal, handleDatosActual, handleTipoModal, handleEliminarDatos } = useDental();
+    const { handleClickModal, handleDatosActual, handleTipoModal, handleEliminarDatos, handleErrorSweet } = useDental();
     const [clientes, setClientes] = useState([]);
+    const [terminoBusqueda, setTerminoBusqueda] = useState('');
     const [paginaActual, setPaginaActual] = useState(1);
     const [totalClientes, setTotalClientes] = useState(0);
     const clientesPorPagina = 10;
@@ -28,7 +29,25 @@ export default function Vistacliente() {
     const cambiarPagina = (numeroPagina) => {
         setPaginaActual(numeroPagina);
     };
-    
+
+    const handleBuscarCliente = () => {
+        if (terminoBusqueda != '') {
+            clienteAxios.get(`api/cliente/${terminoBusqueda}`)
+                .then((respuesta) => {
+                    if (respuesta.data.data != undefined) {
+                        setClientes([respuesta.data.data])
+                        setTotalClientes(1);
+                    }
+                })
+                .catch((error) => {
+                    handleErrorSweet('No se encontró ningún Cliente con esa identificación');
+                });
+        } else {
+            console.log(data.data);
+            setClientes(data.data);
+        }
+    };
+
     if (isLoading) return <Spinner />
 
     return (
@@ -36,7 +55,19 @@ export default function Vistacliente() {
             <div className="mb-4 mt-4">
                 <h3 className="text-gray-600 text-3xl font-medium text-center font-serif">Lista de Clientes</h3>
             </div>
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-between mb-4">
+                <div>
+                    <input
+                        type="text"
+                        value={terminoBusqueda}
+                        onChange={(e) => setTerminoBusqueda(e.target.value)}
+                        placeholder="Identificación Cliente..."
+                        className="p-2 border-gray-200 border rounded-lg w-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    />
+                    <button onClick={handleBuscarCliente} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2'>
+                        <FaSearch />
+                    </button>
+                </div>
                 <button onClick={handleClickModal} className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded flex items-center">
                     <FaPlus className="mr-2" /> Agregar Cliente
                 </button>

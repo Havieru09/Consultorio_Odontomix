@@ -31,7 +31,6 @@ export default function VistaCitas() {
     };
 
     const handleBuscarCita = () => {
-        // consultar la API
         if (terminoBusqueda != '') {
             clienteAxios.get(`api/citas_paciente/${terminoBusqueda}`)
             .then((respuesta) => {
@@ -55,7 +54,7 @@ export default function VistaCitas() {
 
 
     if (isLoading) return <Spinner />
-    // console.log(citas);
+
     return (
         <div className="min-w-full overflow-hidden rounded-lg shadow p-4">
             <div className="mb-4 mt-4">

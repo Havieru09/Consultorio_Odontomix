@@ -33,6 +33,7 @@ export default function VistaConsultas() {
     if (terminoBusqueda != '') {
       clienteAxios.get(`api/consultas_paciente/${terminoBusqueda}`)
         .then((respuesta) => {
+          console.log(respuesta.data.data);
           setConsultas(respuesta.data.data);
         })
         .catch((error) => {
