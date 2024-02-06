@@ -71,11 +71,12 @@ class Historial_ClinicoController extends Controller
         if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('numero_ficha', $numero_ficha)->first()) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
-        //poner validación de que exista el archivo
-        if (empty($historial->radiografia_historial)) {
+        
+        $imagen = public_path('archivos/' . $historial->radiografia_historial);
+        
+        if (empty($historial->radiografia_historial) || !file_exists($imagen)) {
             return response()->json(['errors' => 'No se encuentra un archivo'], 404);
         }
-        $imagen = public_path('archivos/' . $historial->radiografia_historial);
         return response()->download($imagen);
     }
 
