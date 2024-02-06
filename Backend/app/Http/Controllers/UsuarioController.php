@@ -20,7 +20,7 @@ class UsuarioController extends Controller
 
     public function store(Request $request)
     {
-        if(Usuario::where('nombre_usuario', 'ilike', $request->nombre_usuario)->first()){
+        if(Usuario::where('nombre_usuario', 'LIKE', $request->nombre_usuario)->first()){
             return response()->json(['errors' => 'Ya existe un usuario con ese nombre'], 404);
         }
         
