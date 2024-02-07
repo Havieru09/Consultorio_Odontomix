@@ -98,7 +98,6 @@ export default function FormularioHistorialM() {
 
     const idconsulta = localStorage.getItem('IDCONSULTA');
     const [selectedDiseases, setSelectedDiseases] = useState([]);
-    const [diseaseDetails, setDiseaseDetails] = useState({});
     
     const handleDiseaseChange = (disease) => {
         setSelectedDiseases((prevSelectedDiseases) => ({
@@ -153,25 +152,25 @@ export default function FormularioHistorialM() {
         }
         if (step == 2) {
             if (complications && !preguntaComplicaciones?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputComplicaciones(preguntaComplicaciones?.current?.value?.trim());
             }
             if (beingTreated && !preguntaTratamiento?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputTratamiento(preguntaTratamiento?.current?.value?.trim());
             }
             if (takingMedication && !preguntaMedicamentos?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputMedicamentos(preguntaMedicamentos?.current?.value?.trim());
             }
             if (allergic && !preguntaAlergias?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputAlergias(preguntaAlergias?.current?.value?.trim());
@@ -187,25 +186,25 @@ export default function FormularioHistorialM() {
         }
         if (step == 2) {
             if (complications && !preguntaComplicaciones?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputComplicaciones(preguntaComplicaciones?.current?.value?.trim());
             }
             if (beingTreated && !preguntaTratamiento?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputTratamiento(preguntaTratamiento?.current?.value?.trim());
             }
             if (takingMedication && !preguntaMedicamentos?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputMedicamentos(preguntaMedicamentos?.current?.value?.trim());
             }
             if (allergic && !preguntaAlergias?.current?.value?.trim()) {
-                handleErrorSweet("Complete las pereguntas seleccionadas");
+                handleErrorSweet("Complete las preguntas seleccionadas");
                 return;
             } else {
                 setInputAlergias(preguntaAlergias?.current?.value?.trim());

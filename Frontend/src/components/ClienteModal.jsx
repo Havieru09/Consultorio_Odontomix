@@ -44,6 +44,11 @@ export default function ClienteModal() {
         } else {
             handleIngresarDatos(datos, 'api/clientes');
         }
+        //recargar la pagina sin navigate
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
+
 
     }
 
