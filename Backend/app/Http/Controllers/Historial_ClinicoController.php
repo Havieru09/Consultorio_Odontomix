@@ -77,7 +77,7 @@ class Historial_ClinicoController extends Controller
 
         $identifiacion = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first();
 
-        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('idpaciente', $identifiacion->idpaciente)->first()) {
+        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('idpaciente', $identifiacion->idpaciente)->get()) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
         return new Historial_ClinicoResource($historial);
