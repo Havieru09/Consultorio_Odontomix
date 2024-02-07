@@ -77,10 +77,19 @@ class Historial_ClinicoController extends Controller
 
         $identifiacion = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first();
 
-        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('idpaciente', $identifiacion->idpaciente)->get()) {
+        // dd($identifiacion->idpaciente);
+
+        if (!$historial = Historial_Clinico::where('idpaciente', $identifiacion->idpaciente)->with(['enfermedad_paciente.enfermedades'])->paginate(6)) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
-        return new Historial_ClinicoResource($historial);
+        // dd($historial);
+        return response()->json([
+            'data' => Historial_ClinicoResource::collection($historial),
+            'total' => $historial->total(),
+            'perPage' => $historial->perPage(),
+            'currentPage' => $historial->currentPage(),
+            'lastPage' => $historial->lastPage(),
+        ]);
     }
 
     public function descargar($numero_ficha)

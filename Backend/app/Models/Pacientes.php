@@ -33,4 +33,9 @@ class Pacientes extends Model
     {
         return $this->HasOne(Tipo_Identificacion::class, 'ididentificacion', 'ididentificacion');
     }
+
+    public function historial()
+    {
+        return $this->hasMany(Historial_Clinico::class, 'idpaciente', 'idpaciente');
+    }
 }
