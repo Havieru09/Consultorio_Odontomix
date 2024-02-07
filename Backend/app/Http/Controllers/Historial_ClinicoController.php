@@ -16,7 +16,7 @@ class Historial_ClinicoController extends Controller
 {
 
     public function index()
-    {        
+    {
         if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->paginate(10)) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
@@ -72,9 +72,12 @@ class Historial_ClinicoController extends Controller
         return new Historial_ClinicoResource($historial);
     }
 
-    public function showPaciente($idpaciente)
+    public function showPaciente($identificacion_paciente)
     {
-        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('idpaciente', $idpaciente)->first()) {
+
+        $identifiacion = Pacientes::where('identificacion_paciente', $identificacion_paciente)->first();
+
+        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('idpaciente', $identifiacion->idpaciente)->first()) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
         return new Historial_ClinicoResource($historial);
@@ -85,9 +88,9 @@ class Historial_ClinicoController extends Controller
         if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('numero_ficha', $numero_ficha)->first()) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
-        
+
         $imagen = public_path('archivos/' . $historial->radiografia_historial);
-        
+
         if (empty($historial->radiografia_historial) || !file_exists($imagen)) {
             return response()->json(['errors' => 'No se encuentra un archivo'], 404);
         }
