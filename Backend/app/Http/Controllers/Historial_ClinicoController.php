@@ -16,11 +16,17 @@ class Historial_ClinicoController extends Controller
 {
 
     public function index()
-    {
-        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->get()) {
+    {        
+        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->paginate(10)) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
-        return Historial_ClinicoResource::collection($historial);
+        return response()->json([
+            'data' => Historial_ClinicoResource::collection($historial),
+            'total' => $historial->total(),
+            'perPage' => $historial->perPage(),
+            'currentPage' => $historial->currentPage(),
+            'lastPage' => $historial->lastPage(),
+        ]);
     }
 
     public function store(Request $request)
@@ -63,6 +69,14 @@ class Historial_ClinicoController extends Controller
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
         $historial->URL = URL::to('/') . '/archivos/' . $historial->radiografia_historial;
+        return new Historial_ClinicoResource($historial);
+    }
+
+    public function showPaciente($idpaciente)
+    {
+        if (!$historial = Historial_Clinico::with(['enfermedad_paciente.enfermedades'])->where('idpaciente', $idpaciente)->first()) {
+            return response()->json(['errors' => 'No se encuentra un registro'], 404);
+        }
         return new Historial_ClinicoResource($historial);
     }
 
