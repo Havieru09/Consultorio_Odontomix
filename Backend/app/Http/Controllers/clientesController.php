@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClienteRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\ClientesResource;
+use App\Models\Cita;
 use App\Models\Clientes;
 
 class ClientesController extends Controller
@@ -59,9 +60,13 @@ class ClientesController extends Controller
 
     public function destroy($idcliente)
     {
+        if (Cita::where('idcliente', $idcliente)->exists()) {
+            return response()->json(['errors' => 'No se puede eliminar el cliente porque tiene documentos relacionados'], 404);
+        }
         if (!$clientes = Clientes::find($idcliente)) {
             return response()->json(['errors' => 'No se encuentra el cliente que desea eliminar'], 404);
         }
+
         $clientes->delete();
         return new ClientesResource($clientes);
     }

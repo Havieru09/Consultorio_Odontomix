@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PacienteRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\PacientesResource;
+use App\Models\Cita;
 use App\Models\Pacientes;
 
 class PacientesController extends Controller
@@ -54,6 +55,11 @@ class PacientesController extends Controller
 
     public function destroy($idpaciente)
     {
+
+        if (Cita::where('idpaciente', $idpaciente)->exists()) {
+            return response()->json(['errors' => 'No se puede eliminar el paciente, tiene citas asociadas'], 404);
+        }
+
         if (!$paciente = Pacientes::find($idpaciente)) {
             return response()->json(['errors' => 'No se encuentra el paciente en la base de datos'], 404);
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Enfermedades;
 use App\Http\Resources\EnfermedadesResources;
+use App\Models\Enfermedad_Paciente;
 
 class EnfermedadesController extends Controller
 {
@@ -46,6 +47,10 @@ class EnfermedadesController extends Controller
 
     public function destroy($id)
     {
+        if (Enfermedad_Paciente::where('idenfermedad', $id)->exists()) {
+            return response()->json(['errors' => 'No se puede eliminar la enfermedad, tiene pacientes asociados'], 404);
+        }
+
         if (!$enfermedades = Enfermedades::find($id)) {
             return response()->json(['errors' => 'No se encuentra la enfermedad que desea eliminar'], 404);
         }
