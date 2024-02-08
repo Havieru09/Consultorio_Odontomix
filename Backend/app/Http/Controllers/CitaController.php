@@ -26,7 +26,7 @@ class CitaController extends Controller
                     $cita->save();
                 }
                 return response()->json([
-                    'data' => CitaResources::collection($citas)->orderBy('estado_cita', 'asc')->orderBy('fechahora_cita', 'asc'),
+                    'data' => CitaResources::collection($citas),
                     'total' => $citas->total(),
                     'perPage' => $citas->perPage(),
                     'currentPage' => $citas->currentPage(),
@@ -34,7 +34,7 @@ class CitaController extends Controller
                 ]);
             } else {
                 return response()->json([
-                    'data' => CitaResources::collection($citas)->orderBy('estado_cita', 'asc')->orderBy('fechahora_cita', 'asc'),
+                    'data' => CitaResources::collection($citas),
                     'total' => $citas->total(),
                     'perPage' => $citas->perPage(),
                     'currentPage' => $citas->currentPage(),
