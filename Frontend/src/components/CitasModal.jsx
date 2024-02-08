@@ -7,7 +7,7 @@ import { formatearFechaSinHora, formatearHora } from "../helpers";
 
 
 export default function CitasModal() {
-  const { handleTipoModal, handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, handleEnvioMail } = useDental();
+  const { handleTipoModal, handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, handleEnvioMail, handleErrorSweet } = useDental();
   const [clientes, setClientes] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [inputCliente, setInputCliente] = useState('');
@@ -18,6 +18,7 @@ export default function CitasModal() {
   const concepto_cita = createRef();
   const fecha = createRef();
   const hora = createRef();
+  const [selectedHour, setSelectedHour] = useState('');
 
   const fetcherCliente = () => clienteAxios('api/clientes').then(datos => datos.data);
   const { data: dataCliente } = useSWR('api/clientes', fetcherCliente);
@@ -77,6 +78,8 @@ export default function CitasModal() {
         fechahora_cita: fecha.current.value + ' ' + hora.current.value,
         estado_cita: 0
       };
+
+      console.log(data);
       if (datosActual.idcita != null) {
         handleEditarDatos(datosActual.idcita, data, 'api/citas');
       } else {
@@ -86,7 +89,17 @@ export default function CitasModal() {
       setTimeout(() => {
         window.location.reload();
       }, 3000);
+    }else{
+      handleErrorSweet('Por favor complete todos los campos');
     }
+  };
+
+  const obtenerFechaActual = () => {
+    const hoy = new Date();
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0'); // Enero es 0
+    const año = hoy.getFullYear();
+    return `${año}-${mes}-${dia}`;
   };
 
   const generateTimeOptions = () => {
@@ -117,8 +130,13 @@ export default function CitasModal() {
     if (datosActual && datosActual.paciente) {
       setInputPaciente(datosActual.paciente.identificacion_paciente);
     }
-  }, [dataCliente, dataPaciente, datosActual]);
 
+    if (datosActual.fechahora_cita) {
+      setSelectedHour(formatearHora(datosActual.fechahora_cita));
+    }
+
+  }, [dataCliente, dataPaciente, datosActual, datosActual.fechahora_cita]);
+  // console.log(formatearHora(datosActual.fechahora_cita));
   return (
     <div className="p-4">
       <div>
@@ -142,7 +160,7 @@ export default function CitasModal() {
             }
             type="date"
             className={`shadow appearance-none border ${errores.fecha ? 'border-red-500' : ''} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-            min={new Date().toISOString().split('T')[0]}
+            min={obtenerFechaActual()}
           />
 
         </div>

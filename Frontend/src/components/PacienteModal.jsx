@@ -19,11 +19,12 @@ export default function PacienteModal() {
     const [validate, setValidate] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
-    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId } = useDental();
+    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet } = useDental();
 
     const handleEnviarPaciente = e => {
         e.preventDefault();
         if (!validarCampos()) {
+            handleErrorSweet('Por favor complete todos los campos');
             return;
         }
 
@@ -70,6 +71,11 @@ export default function PacienteModal() {
                 newInvalidFields[field.name] = true;
             }
         });
+
+        const telefono = telefono_paciente.current.value.trim();
+        if (!telefono || telefono.length !== 10 || !/^\d{10}$/.test(telefono)) {
+            newInvalidFields['telefono_paciente'] = 'El teléfono debe contener exactamente 10 dígitos.';
+        }
 
         setInvalidFields(newInvalidFields);
         return Object.keys(newInvalidFields).length === 0; // Retorna true si todos los campos son válidos
@@ -211,7 +217,7 @@ export default function PacienteModal() {
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.direccion_paciente ? 'border-red-500' : ''}`}
                     />
                 </div>
-                <div>
+                {/* <div>
                     <label className="block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
                     <input
                         defaultValue={datosActual ? datosActual.telefono_paciente : ''}
@@ -220,6 +226,21 @@ export default function PacienteModal() {
                         name="telefono_paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.telefono_paciente ? 'border-red-500' : ''}`}
                     />
+                    {invalidFields.telefono_paciente && <p className="text-red-500 text-xs mt-1">{invalidFields.telefono_paciente}</p>}
+                </div> */}
+                <div>
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Teléfono: <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        defaultValue={datosActual ? datosActual.telefono_paciente : ''}
+                        ref={telefono_paciente}
+                        type="text"
+                        name="telefono_cliente"
+                        placeholder="Ingrese teléfono"
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.telefono_paciente ? 'border-red-500' : ''}`}
+                    />
+                    {invalidFields.telefono_paciente && <p className="text-red-500 text-xs mt-1">{invalidFields.telefono_paciente}</p>}
                 </div>
                 <div className={`${datosActual.id}`}>
                     <label className="block text-gray-700 text-sm font-bold mb-2">Correo:</label>

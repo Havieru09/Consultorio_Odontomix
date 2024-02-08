@@ -8,7 +8,7 @@ import useDental from '../../hooks/useDental';
 import MiniSpinner from '../../components/MiniSpiner';
 
 export default function FormularioHistorialM() {
-    
+
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [complications, setComplications] = useState(false);
@@ -98,7 +98,7 @@ export default function FormularioHistorialM() {
 
     const idconsulta = localStorage.getItem('IDCONSULTA');
     const [selectedDiseases, setSelectedDiseases] = useState([]);
-    
+
     const handleDiseaseChange = (disease) => {
         setSelectedDiseases((prevSelectedDiseases) => ({
             ...prevSelectedDiseases,
@@ -299,8 +299,6 @@ export default function FormularioHistorialM() {
                 </button>
             </div>
         </section>
-
-
     );
 
     const StepTwo = () => (
@@ -775,9 +773,6 @@ export default function FormularioHistorialM() {
                     >
                         Atrás
                     </button>
-                    {/* <button onClick={nextStep} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
-                    Siguiente
-                </button> */}
                 </div>
             </div>
         )
@@ -797,12 +792,30 @@ export default function FormularioHistorialM() {
             });
     };
 
+    const validarExamenesExtra = () => {
+        if (inputValues.idexamen_cabeza === '' || inputValues.idexamen_cara === '' || inputValues.idexamen_atm === '' || inputValues.idexamen_ganglios === '' || inputValues.idexamen_labios === '' || inputValues.idexamen_señasp === '') {
+            handleErrorSweet("Por favor, complete todos los campos del examen extraoral antes de continuar.");
+            return false;
+        }
+        return true;
+    }
+
+    const validarExamenesIntra = () => {
+        if (inputExamenIntraoral.idexamen_encia === '' || inputExamenIntraoral.idexamen_lengua === '' || inputExamenIntraoral.idexamen_paladar_duro === '' || inputExamenIntraoral.idexamen_paladar_blando === '' || inputExamenIntraoral.idexamen_reborde === '' || inputExamenIntraoral.idexamen_oclusion === '' || inputExamenIntraoral.idexamen_piso_boca === '' || inputExamenIntraoral.faringe === '') {
+            handleErrorSweet("Por favor, complete todos los campos del examen intraoral antes de continuar.");
+            return false;
+        }
+        return true;
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!isAllDiseasesFilled()) {
             handleErrorSweet("Por favor, complete los detalles de todas las enfermedades seleccionadas antes de continuar.");
             return;
         }
+
+
 
         if (step == 2) {
             if (complications && !preguntaComplicaciones?.current?.value?.trim()) {
@@ -826,9 +839,16 @@ export default function FormularioHistorialM() {
             respuesta3: inputMedicamentos ? inputMedicamentos : '',
             respuesta4: inputAlergias ? inputAlergias : '',
         }
+
+        if (!validarExamenesExtra) {
+            return;
+        }
+
+        if (!validarExamenesIntra) {
+            return;
+        }
+
         handleSubmitHistorial(diseasesData, preguntas, inputValues, consulta.cita.paciente.idpaciente, consulta.idconsulta, navigate, inputExamenIntraoral, idconsulta, archivo, setBotonHabilidato);
-
-
 
     };
 
@@ -849,7 +869,7 @@ export default function FormularioHistorialM() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-            <form onSubmit={handleSubmit} className="w-full max-w-3xl bg-white shadow-md rounded px-8 pt-6 pb-8">
+            <form noValidate onSubmit={handleSubmit} className="w-full max-w-3xl bg-white shadow-md rounded px-8 pt-6 pb-8">
                 {renderStep()}
             </form>
         </div>

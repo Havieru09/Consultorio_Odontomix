@@ -33,13 +33,13 @@ export default function VistaCitas() {
     const handleBuscarCita = () => {
         if (terminoBusqueda != '') {
             clienteAxios.get(`api/citas_paciente/${terminoBusqueda}`)
-            .then((respuesta) => {
-                setCitas(respuesta.data.data);
-            })
-            .catch((error) => {
-                handleErrorSweet('No se encontró ningún paciente con esa identificación');
-            });
-        }else{
+                .then((respuesta) => {
+                    setCitas(respuesta.data.data);
+                })
+                .catch((error) => {
+                    handleErrorSweet('No se encontró ningún paciente con esa identificación');
+                });
+        } else {
             console.log(data.data);
             setCitas(data.data);
         }
@@ -48,6 +48,9 @@ export default function VistaCitas() {
 
     const handleEliminarCita = (id) => {
         handleEliminarDatos(id, 'api/citas');
+        setTimeout(() => {
+
+        }, 3000);
     };
 
 
@@ -83,9 +86,13 @@ export default function VistaCitas() {
                         </div>
                     ) : (
                         citas.map((cita) => {
+                            const cardBgColor = cita.estado_cita === 0 ? '' :
+                                cita.estado_cita === 1 ? 'bg-green-300' :
+                                    'bg-red-300';
                             const isPending = cita.estado_cita === 0;
+                            const isCancelled = cita.estado_cita === 2;
                             return (
-                                <div key={cita.idcita} className={`flex flex-col rounded-lg overflow-hidden shadow-lg ${isPending ? 'bg-white' : 'bg-green-300'}`}>
+                                <div key={cita.idcita} className={`flex flex-col rounded-lg overflow-hidden shadow-lg ${cardBgColor}`}>
                                     {/* Cabecera con datos del paciente */}
                                     <div className="bg-blue-300 p-4">
                                         <h2 className="font-bold text-xl mb-2">
@@ -104,15 +111,18 @@ export default function VistaCitas() {
                                     <div className="mt-auto bg-blue-300 p-4">
                                         <p className="text-gray-700 text-base">Fecha de la cita: <span className="font-bold">{(formatearFechaSinHora(cita.fechahora_cita) + ' a las: ' + formatearHora(cita.fechahora_cita))}</span></p>
                                         <div className="flex justify-between pl-4 pr-4 pt-4 border-gray-200">
-                                            <button onClick={(event) => handleDatosActual(cita)} className={`${isPending ? '' : 'hidden'} bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded`}>
+                                            {/* Muestra el botón Editar solo si la cita está pendiente o cancelada */}
+                                            <button onClick={(event) => handleDatosActual(cita)} className={`bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded ${isPending || isCancelled ? '' : 'hidden'}`}>
                                                 Editar
                                             </button>
+                                            {/* Muestra el botón Completar solo si la cita está pendiente */}
                                             <button onClick={() => handleCompletarCita(cita.idcita, 'api/citas', cita)}
-                                                className={`${isPending ? 'bg-green-500' : 'bg-indigo-500'} hover:${isPending ? 'bg-green-700' : 'bg-indigo-600'} text-white font-bold py-1 px-3 rounded ${isPending ? '' : 'hidden'}`}
+                                                className={`bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded ${isPending ? '' : 'hidden'}`}
                                             >
-                                                {isPending ? 'Completar' : 'Ver consulta'}
+                                                Completar
                                             </button>
-                                            <button onClick={() => handleEliminarCita(cita.idcita)} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ${isPending ? '' : 'hidden'}`}>
+                                            {/* Muestra el botón Eliminar solo si la cita está pendiente o cancelada */}
+                                            <button onClick={() => handleEliminarCita(cita.idcita)} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ${isPending || isCancelled ? '' : 'hidden'}`}>
                                                 Eliminar
                                             </button>
                                         </div>

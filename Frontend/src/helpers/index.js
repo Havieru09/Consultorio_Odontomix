@@ -15,18 +15,14 @@ const formatearFecha = fecha => {
 
 const formatearFechaSinHora = (fecha, vista = true) => {
     const [date, time] = fecha.split(" ");
-    // date = new Date(date).toLocaleDateString();
     if (vista) {
         const [day, month, year] = date.split("-");
-        // cambiar a dia mes año
         const formattedDate = day + "/" + month + "/" + year;
 
         return formattedDate;     
     }
     const [year, month, day] = date.split("-");
     const formattedDate = day +"-"+ month +"-"+ year;
-    // console.log(formattedDate);
-    console.log(formattedDate);
     return formattedDate;
 }
 

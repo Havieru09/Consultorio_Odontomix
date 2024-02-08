@@ -20,12 +20,13 @@ export default function ClienteModal() {
     const [validate, setValidate] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
-    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId } = useDental();
+    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet } = useDental();
 
     const handleEnviarCliente = e => {
         e.preventDefault();
 
         if (!validateFields()) {
+            handleErrorSweet('Por favor complete todos los campos');
             return; // No continuar si hay campos inválidos
         }
         const datos = {
@@ -39,6 +40,9 @@ export default function ClienteModal() {
             direccion_cliente: direccion_cliente.current.value,
             correo_cliente: correo_cliente.current.value,
         };
+
+
+
         if (datosActual.idcliente != null) {
             handleEditarDatos(datosActual.idcliente, datos, 'api/clientes');
         } else {
@@ -70,6 +74,11 @@ export default function ClienteModal() {
                 newInvalidFields[field.name] = true;
             }
         });
+
+        const telefono = telefono_cliente.current.value.trim();
+        if (!telefono || telefono.length !== 10 || !/^\d{10}$/.test(telefono)) {
+            newInvalidFields['telefono_cliente'] = 'El teléfono debe contener exactamente 10 dígitos.';
+        }
 
         setInvalidFields(newInvalidFields);
         return Object.keys(newInvalidFields).length === 0; // Retorna true si todos los campos son válidos
@@ -219,6 +228,7 @@ export default function ClienteModal() {
                         placeholder="Ingrese teléfono"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.telefono_cliente ? 'border-red-500' : ''}`}
                     />
+                    {invalidFields.telefono_cliente && <p className="text-red-500 text-xs mt-1">{invalidFields.telefono_cliente}</p>}
                 </div>
                 <div>
                     <label className="block text-gray-700 text-sm font-bold mb-2">
