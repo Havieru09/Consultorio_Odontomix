@@ -26,14 +26,15 @@ class CitaController extends Controller
                     $cita->save();
                 }
             } else {
-                return response()->json([
-                    'data' => CitaResources::collection($citas),
-                    'total' => $citas->total(),
-                    'perPage' => $citas->perPage(),
-                    'currentPage' => $citas->currentPage(),
-                    'lastPage' => $citas->lastPage(),
-                ]);
+                
             }
+            return response()->json([
+                'data' => CitaResources::collection($citas),
+                'total' => $citas->total(),
+                'perPage' => $citas->perPage(),
+                'currentPage' => $citas->currentPage(),
+                'lastPage' => $citas->lastPage(),
+            ]);
         }
     }
 
