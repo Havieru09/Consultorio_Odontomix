@@ -45,6 +45,9 @@ export default function PacienteModal() {
         } else {
             handleIngresarDatos(datos, 'api/pacientes');
         }
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
     }
 
     const validarCampos = () => {
