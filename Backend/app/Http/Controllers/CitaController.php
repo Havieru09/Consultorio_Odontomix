@@ -17,7 +17,7 @@ class CitaController extends Controller
         $citas = Cita::orderBy('estado_cita', 'asc')->orderBy('fechahora_cita', 'asc')->paginate(6);
 
         foreach ($citas as $cita) {
-            $flimite = Carbon::parse($cita->fechahora_cita)->addHours(1)->addDays(1);
+            $flimite = Carbon::parse($cita->fechahora_cita)->addMinutes(30)->addHours(1)->addDays(1);
             $fecha = Carbon::now();
 
             if ($fecha->lte($flimite)) {
