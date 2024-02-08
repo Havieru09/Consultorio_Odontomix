@@ -20,21 +20,27 @@ class CitaController extends Controller
             $flimite = Carbon::parse($cita->fechahora_cita)->addDay()->addMinutes(30);
             $fecha = Carbon::now();
 
-            if ($citas->estado_cita == 1) {
+            if ($cita->estado_cita = 1) {
                 if ($fecha->gt($flimite)) {
                     $cita->estado_cita = 2;
                     $cita->save();
                 }
+                return response()->json([
+                    'data' => CitaResources::collection($citas),
+                    'total' => $citas->total(),
+                    'perPage' => $citas->perPage(),
+                    'currentPage' => $citas->currentPage(),
+                    'lastPage' => $citas->lastPage(),
+                ]);
             } else {
-                
+                return response()->json([
+                    'data' => CitaResources::collection($citas),
+                    'total' => $citas->total(),
+                    'perPage' => $citas->perPage(),
+                    'currentPage' => $citas->currentPage(),
+                    'lastPage' => $citas->lastPage(),
+                ]);
             }
-            return response()->json([
-                'data' => CitaResources::collection($citas),
-                'total' => $citas->total(),
-                'perPage' => $citas->perPage(),
-                'currentPage' => $citas->currentPage(),
-                'lastPage' => $citas->lastPage(),
-            ]);
         }
     }
 
