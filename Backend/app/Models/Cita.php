@@ -33,14 +33,4 @@ class Cita extends Model
     {
         return $this->belongsTo(Clientes::class, 'idcliente', 'idcliente');
     }
-
-    protected static function boot()
-    {
-        parent::boot();
-        date_default_timezone_set('America/Guayaquil');
-        static::creating(function ($query) {
-            $query->fechahora_cita = now();
-        });
-    }
-
 }

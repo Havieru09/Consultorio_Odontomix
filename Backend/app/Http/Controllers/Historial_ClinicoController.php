@@ -82,7 +82,6 @@ class Historial_ClinicoController extends Controller
         if (!$historial = Historial_Clinico::where('idpaciente', $identifiacion->idpaciente)->with(['enfermedad_paciente.enfermedades'])->paginate(6)) {
             return response()->json(['errors' => 'No se encuentra un registro'], 404);
         }
-        // dd($historial);
         return response()->json([
             'data' => Historial_ClinicoResource::collection($historial),
             'total' => $historial->total(),
