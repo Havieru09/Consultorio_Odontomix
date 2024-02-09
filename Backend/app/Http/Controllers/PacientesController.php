@@ -44,6 +44,14 @@ class PacientesController extends Controller
         return new PacientesResource($paciente);
     }
 
+    public function todo()
+    {
+        $pacientes = Pacientes::all();
+        return response()->json([
+            'data' => PacientesResource::collection($pacientes),
+        ]);
+    }
+
     public function update(Request $request, $idpaciente)
     {
         if (!$paciente = Pacientes::find($idpaciente)) {

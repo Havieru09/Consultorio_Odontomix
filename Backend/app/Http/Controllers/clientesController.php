@@ -10,6 +10,7 @@ use App\Models\Clientes;
 
 class ClientesController extends Controller
 {
+
     public function index()
     {
         $clientes = Clientes::paginate(10);
@@ -21,11 +22,8 @@ class ClientesController extends Controller
             'currentPage' => $clientes->currentPage(),
             'lastPage' => $clientes->lastPage(),
         ]);
-        // if (!$clientes = Clientes::all()) {
-        //     return response()->json(['errors' => 'No se encuentran clientes en la base de datos'], 404);
-        // }
-        // return ClientesResource::collection($clientes);
     }
+
 
     public function store(ClienteRequest $request)
     {
@@ -47,6 +45,15 @@ class ClientesController extends Controller
             return response()->json(['errors' => 'Cliente no encontrado'], 404);
         }
         return new ClientesResource($clientes);
+    }
+
+    
+    public function todo()
+    {
+        $clientes = Clientes::all();
+        return response()->json([
+            'data' => ClientesResource::collection($clientes),
+        ]);
     }
 
     public function update(Request $request, $idcliente)
