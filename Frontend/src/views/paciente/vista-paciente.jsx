@@ -7,7 +7,7 @@ import Spinner from "../../components/Spinner";
 import Pagination from "../../components/Pagination";
 
 export default function VistaPaciente() {
-  const { handleClickModal, handleTipoModal, handleDatosActual, handleEliminarDatos } = useDental();
+  const { handleClickModal, handleTipoModal, handleDatosActual, handleEliminarDatos, handleErrorSweet } = useDental();
   const [pacientes, setPacientes] = useState([]);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
@@ -41,6 +41,18 @@ export default function VistaPaciente() {
     } else {
       setPacientes(data.data);
     }
+  };
+
+  const handleEliminarPaciente = (id) => {
+    try {
+      handleEliminarDatos(id, 'api/pacientes', "No podras recuperar la información!", true, true);      
+    } catch (error) {
+      // handleErrorSweet(error.response.data.errors);
+      return;
+    }
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 2000);
   };
 
   if (isLoading) return <Spinner />
@@ -128,7 +140,7 @@ export default function VistaPaciente() {
                     <button onClick={(event) => handleDatosActual(paciente)} className="text-blue-500 hover:text-blue-700 mr-4">
                       <FaEdit />
                     </button>
-                    <button onClick={(event) => handleEliminarDatos(paciente.idpaciente, 'api/pacientes')} className="text-red-500 hover:text-red-700">
+                    <button onClick={(event) => handleEliminarPaciente(paciente.idpaciente)} className="text-red-500 hover:text-red-700">
                       <FaTrash />
                     </button>
                   </td>

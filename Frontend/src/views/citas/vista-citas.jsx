@@ -49,8 +49,8 @@ export default function VistaCitas() {
     const handleEliminarCita = (id) => {
         handleEliminarDatos(id, 'api/citas');
         setTimeout(() => {
-
-        }, 3000);
+            window.location.reload();
+        }, 2000);
     };
 
 

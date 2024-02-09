@@ -51,7 +51,7 @@ export default function ClienteModal() {
         //recargar la pagina sin navigate
         setTimeout(() => {
             window.location.reload();
-        }, 3000);
+        }, 2000);
 
 
     }

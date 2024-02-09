@@ -30,6 +30,11 @@ export default function Vistacliente() {
         setPaginaActual(numeroPagina);
     };
 
+    const handleEliminarCliente = (id) => {
+        handleEliminarDatos(id, 'api/clientes', "No podras recuperar la información!", true, true);
+    };
+        
+
     const handleBuscarCliente = () => {
         if (terminoBusqueda != '') {
             clienteAxios.get(`api/cliente/${terminoBusqueda}`)
@@ -133,7 +138,8 @@ export default function Vistacliente() {
                                     <button onClick={(event) => handleDatosActual(cliente)} className="text-blue-500 hover:text-blue-700 mr-4">
                                         <FaEdit />
                                     </button>
-                                    <button onClick={(event) => handleEliminarDatos(cliente.idcliente, 'api/clientes')} className="text-red-500 hover:text-red-700">
+                                    {/* <button onClick={(event) => handleEliminarDatos(cliente.idcliente, 'api/clientes')} className="text-red-500 hover:text-red-700"> */}
+                                    <button onClick={(event) => handleEliminarCliente(cliente.idcliente)} className="text-red-500 hover:text-red-700">
                                         <FaTrash />
                                     </button>
                                 </td>

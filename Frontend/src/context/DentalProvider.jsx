@@ -278,7 +278,7 @@ const DentalProvider = ({ children }) => {
         })
     }
 
-    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, datos = null) => {
+    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, reiniciar = false) => {
         // console.log(id, url, text);
         if (alerta) {
             Swal.fire({
@@ -291,22 +291,33 @@ const DentalProvider = ({ children }) => {
                 confirmButtonText: 'Si, Eliminar!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    clienteAxios.delete(`${url}/${id}`);
-                    console.log(url);
-                    if (datos) {
-                        datos.filter((dato) => dato.id !== id);
-                    }
-                    setTimeout(() => {
-                        setRefresh(!refresh);
-                        mutate(url);
-                    }, 1000);
 
 
-                    Swal.fire(
-                        'Eliminado!',
-                        'Los datos fueron eliminados con exito.',
-                        'success'
-                    )
+                    clienteAxios.delete(`${url}/${id}`).then(response => {
+                        setTimeout(() => {
+                            setRefresh(!refresh);
+                            mutate(url);
+                        }, 1000);
+                        Swal.fire(
+                            'Eliminado!',
+                            'Los datos fueron eliminados con exito.',
+                            'success'
+                        )
+                        if (reiniciar) {
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);                            
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                        handleErrorSweet(error?.response?.data?.errors || "Ocurrió un error al intentar eliminar.");
+                        return;
+                    });
+                        
+
+
+
+                    
                 }
             })
         } else {
