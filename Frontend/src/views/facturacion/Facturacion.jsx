@@ -24,7 +24,7 @@ export default function Facturacion() {
     const [idFactura, setIdFactura] = useState(0);
     const [detalles, setDetalles] = useState([]);
 
-    const { data: dataClientes, isLoading: isLoadingClientes } = useSWR('api/clientes', () => clienteAxios('api/clientes').then(datos => datos.data));
+    const { data: dataClientes, isLoading: isLoadingClientes } = useSWR('api/clientes2', () => clienteAxios('api/clientes2').then(datos => datos.data));
 
     const [clienteSeleccionado, setClienteSeleccionado] = useState({});
 

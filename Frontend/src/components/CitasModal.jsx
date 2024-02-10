@@ -20,11 +20,11 @@ export default function CitasModal() {
   const hora = createRef();
   const [selectedHour, setSelectedHour] = useState('');
 
-  const fetcherCliente = () => clienteAxios('api/clientes').then(datos => datos.data);
-  const { data: dataCliente } = useSWR('api/clientes', fetcherCliente);
+  const fetcherCliente = () => clienteAxios('api/clientes2').then(datos => datos.data);
+  const { data: dataCliente } = useSWR('api/clientes2', fetcherCliente);
 
-  const fetcherPaciente = () => clienteAxios('api/pacientes').then(datos => datos.data);
-  const { data: dataPaciente } = useSWR('api/pacientes', fetcherPaciente);
+  const fetcherPaciente = () => clienteAxios('api/pacientes2').then(datos => datos.data);
+  const { data: dataPaciente } = useSWR('api/pacientes2', fetcherPaciente);
 
   const handleClienteChange = (e) => {
     setInputCliente(e.target.value);
