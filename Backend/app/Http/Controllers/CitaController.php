@@ -17,10 +17,10 @@ class CitaController extends Controller
         $citas = Cita::orderBy('estado_cita', 'asc')->orderBy('fechahora_cita', 'asc')->paginate(6);
 
         foreach ($citas as $cita) {
-            $flimite = Carbon::parse($cita->fechahora_cita)->addDay()->addMinutes(30);
+            $flimite = Carbon::parse($cita->fechahora_cita)->addMinutes(30);
             $fecha = Carbon::now();
 
-            if ($cita->estado_cita = 1) {
+            if ($cita->estado_cita == 0) {
                 if ($fecha->gt($flimite)) {
                     $cita->estado_cita = 2;
                     $cita->save();
