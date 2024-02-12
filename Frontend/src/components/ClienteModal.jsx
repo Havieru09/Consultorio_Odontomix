@@ -151,6 +151,20 @@ export default function ClienteModal() {
                         ))}
                     </select>
                 </div>
+                <div className={`${datosActual.idcliente ? 'hidden' : ''}`}>
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Identificación cliente: <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        defaultValue={datosActual ? datosActual.identificacion_cliente : ''}
+                        ref={identificacion_cliente}
+                        type="text"
+                        name="identificacion_cliente"
+                        onBlur={handleValidaIdentificacion} // Aquí se añade el evento onBlur
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.identificacion_cliente ? 'border-red-500' : ''}`}
+                    />
+                    {!validate && <p className="text-red-500 text-xs mt-1">{errorMsg}</p>}
+                </div>
                 <div>
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Nombres: <span className="text-red-500">*</span>
@@ -175,20 +189,7 @@ export default function ClienteModal() {
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.apellidos_cliente ? 'border-red-500' : ''}`}
                     />
                 </div>
-                <div className={`${datosActual.idcliente ? 'hidden' : ''}`}>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Identificación cliente: <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        defaultValue={datosActual ? datosActual.identificacion_cliente : ''}
-                        ref={identificacion_cliente}
-                        type="text"
-                        name="identificacion_cliente"
-                        onBlur={handleValidaIdentificacion} // Aquí se añade el evento onBlur
-                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.identificacion_cliente ? 'border-red-500' : ''}`}
-                    />
-                    {!validate && <p className="text-red-500 text-xs mt-1">{errorMsg}</p>}
-                </div>
+                
                 <div>
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Género:
