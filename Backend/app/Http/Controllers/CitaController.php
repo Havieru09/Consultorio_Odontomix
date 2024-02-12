@@ -15,33 +15,26 @@ class CitaController extends Controller
     {
 
         $citas = Cita::orderBy('estado_cita', 'asc')->orderBy('fechahora_cita', 'asc')->paginate(6);
-
+        $fecha = Carbon::now();
         foreach ($citas as $cita) {
-            $flimite = Carbon::parse($cita->fechahora_cita)->addMinutes(30);
-            $fecha = Carbon::now();
 
-            if ($cita->estado_cita == 0) {
-                if ($fecha->gt($flimite)) {
+            $fecha_emision = Carbon::parse($cita->fechahora_cita);
+            $flimite = $fecha_emision->copy()->addHours(5)->addMinutes(30);
+
+            if ($fecha->gt($flimite)) {
+                if ($cita->estado_cita == 0) {
                     $cita->estado_cita = 2;
                     $cita->save();
                 }
-                return response()->json([
-                    'data' => CitaResources::collection($citas),
-                    'total' => $citas->total(),
-                    'perPage' => $citas->perPage(),
-                    'currentPage' => $citas->currentPage(),
-                    'lastPage' => $citas->lastPage(),
-                ]);
-            } else {
-                return response()->json([
-                    'data' => CitaResources::collection($citas),
-                    'total' => $citas->total(),
-                    'perPage' => $citas->perPage(),
-                    'currentPage' => $citas->currentPage(),
-                    'lastPage' => $citas->lastPage(),
-                ]);
             }
         }
+        return response()->json([
+            'data' => CitaResources::collection($citas),
+            'total' => $citas->total(),
+            'perPage' => $citas->perPage(),
+            'currentPage' => $citas->currentPage(),
+            'lastPage' => $citas->lastPage(),
+        ]);
     }
 
     public function store(CitaRequest $request)
