@@ -222,7 +222,7 @@ const DentalProvider = ({ children }) => {
         return mensajesError;
     }
 
-    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?') => {
+    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?', reiniciar = false) => {
         const actualizarDatos = async () => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
@@ -258,6 +258,11 @@ const DentalProvider = ({ children }) => {
 
                 if (result.isConfirmed) {
                     await actualizarDatos();
+                    if (reiniciar) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
                 } else if (result.isDenied) {
                     Swal.fire('No se guardaron los cambios', '', 'info');
                     handleClickModal();
@@ -279,7 +284,6 @@ const DentalProvider = ({ children }) => {
     }
 
     const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, reiniciar = false) => {
-        // console.log(id, url, text);
         if (alerta) {
             Swal.fire({
                 title: 'Estas seguro de eliminarlo?',
@@ -291,8 +295,6 @@ const DentalProvider = ({ children }) => {
                 confirmButtonText: 'Si, Eliminar!'
             }).then((result) => {
                 if (result.isConfirmed) {
-
-
                     clienteAxios.delete(`${url}/${id}`).then(response => {
                         setTimeout(() => {
                             setRefresh(!refresh);
@@ -306,18 +308,18 @@ const DentalProvider = ({ children }) => {
                         if (reiniciar) {
                             setTimeout(() => {
                                 window.location.reload();
-                            }, 2000);                            
+                            }, 2000);
                         }
                     }).catch(error => {
                         console.log(error);
                         handleErrorSweet(error?.response?.data?.errors || "Ocurrió un error al intentar eliminar.");
                         return;
                     });
-                        
 
 
 
-                    
+
+
                 }
             })
         } else {

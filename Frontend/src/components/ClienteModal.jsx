@@ -44,14 +44,14 @@ export default function ClienteModal() {
 
 
         if (datosActual.idcliente != null) {
-            handleEditarDatos(datosActual.idcliente, datos, 'api/clientes');
+            handleEditarDatos(datosActual.idcliente, datos, 'api/clientes', true, true, 'Desea actualizar información?', true);
         } else {
-            handleIngresarDatos(datos, 'api/clientes');
+            handleIngresarDatos(datos, 'api/clientes', true);
         }
         //recargar la pagina sin navigate
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 2000);
 
 
     }

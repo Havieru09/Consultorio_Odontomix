@@ -45,14 +45,10 @@ export default function VistaPaciente() {
 
   const handleEliminarPaciente = (id) => {
     try {
-      handleEliminarDatos(id, 'api/pacientes', "No podras recuperar la información!", true, true);      
+      handleEliminarDatos(id, 'api/pacientes', "No podras recuperar la información!", true, true);
     } catch (error) {
-      // handleErrorSweet(error.response.data.errors);
       return;
     }
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 2000);
   };
 
   if (isLoading) return <Spinner />

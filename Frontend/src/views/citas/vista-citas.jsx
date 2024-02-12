@@ -6,7 +6,6 @@ import useDental from "../../hooks/useDental";
 import { formatearFechaSinHora, formatearHora } from "../../helpers";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import Pagination from "../../components/Pagination";
-import { MdOutlineContentPasteSearch } from "react-icons/md";
 
 export default function VistaCitas() {
     const [terminoBusqueda, setTerminoBusqueda] = useState('');
@@ -47,10 +46,8 @@ export default function VistaCitas() {
 
 
     const handleEliminarCita = (id) => {
-        handleEliminarDatos(id, 'api/citas');
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+        handleEliminarDatos(id, 'api/citas', "No podras recuperar la información!", true, true);
+        
     };
 
 

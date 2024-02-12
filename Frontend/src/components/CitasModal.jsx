@@ -81,14 +81,14 @@ export default function CitasModal() {
 
       console.log(data);
       if (datosActual.idcita != null) {
-        handleEditarDatos(datosActual.idcita, data, 'api/citas');
+        handleEditarDatos(datosActual.idcita, data, 'api/citas', true, true, 'Desea actualizar información?', true);
       } else {
-        handleIngresarDatos(data, 'api/citas');
+        handleIngresarDatos(data, 'api/citas', true);
         handleEnvioMail(data);
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 3000);
     }else{
       handleErrorSweet('Por favor complete todos los campos');
     }

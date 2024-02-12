@@ -1,8 +1,6 @@
 import { FaTimes } from "react-icons/fa";
 import useDental from "../hooks/useDental";
 import { createRef, useState } from "react";
-import { toast } from "react-toastify";
-import Swal from 'sweetalert2';
 
 export default function PacienteModal() {
     const ididentificacion = createRef();
@@ -42,13 +40,10 @@ export default function PacienteModal() {
             correo_paciente: correo_paciente.current.value,
         };
         if (datosActual.idpaciente != null) {
-            handleEditarDatos(datosActual.idpaciente, datos, 'api/pacientes');
+            handleEditarDatos(datosActual.idpaciente, datos, 'api/pacientes', true, true, 'Desea actualizar información?', true);
         } else {
-            handleIngresarDatos(datos, 'api/pacientes');
-        }
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+            handleIngresarDatos(datos, 'api/pacientes', true);
+        }        
     }
 
     const validarCampos = () => {
