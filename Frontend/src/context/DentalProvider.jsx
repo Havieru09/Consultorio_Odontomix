@@ -50,6 +50,11 @@ const DentalProvider = ({ children }) => {
         }
     }
 
+    function validarCorreo(correo) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(correo);
+    }
+
     const handleGetDatos = async (url) => {
         try {
             const fetcher = () => clienteAxios(`${url}`).then(datos => datos.data)
@@ -130,7 +135,7 @@ const DentalProvider = ({ children }) => {
     }
 
     const handleCompletarCita = async (id, url, cita) => {
-        
+
         try {
             Swal.fire({
                 title: `Desea completar la cita?`,
@@ -223,7 +228,7 @@ const DentalProvider = ({ children }) => {
         return mensajesError;
     }
 
-    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?', reiniciar = false, textoAceptar = 'Actualizar', textoDenny = `No actualizar`, mensajeGuardado= `Datos actualizado correctamente`) => {
+    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?', reiniciar = false, textoAceptar = 'Actualizar', textoDenny = `No actualizar`, mensajeGuardado = `Datos actualizado correctamente`) => {
         const actualizarDatos = async () => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
@@ -266,7 +271,7 @@ const DentalProvider = ({ children }) => {
                     }
                 } else if (result.isDenied) {
                     Swal.fire('No se guardaron los cambios', '', 'info');
-                    
+
                 }
             } else {
                 await actualizarDatos();
@@ -380,7 +385,7 @@ const DentalProvider = ({ children }) => {
                 setActualizar,
                 actualizarId,
                 setActualizarId,
-
+                validarCorreo
             }}
         >
             {children}

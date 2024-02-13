@@ -20,7 +20,7 @@ export default function ClienteModal() {
     const [validate, setValidate] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
-    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet } = useDental();
+    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet, validarCorreo } = useDental();
 
     const handleEnviarCliente = e => {
         e.preventDefault();
@@ -29,6 +29,12 @@ export default function ClienteModal() {
             handleErrorSweet('Por favor complete todos los campos');
             return; // No continuar si hay campos inválidos
         }
+
+        if (!validarCorreo(correo_cliente.current.value)) {
+            handleErrorSweet('El correo ingresado no es válido');
+            return;
+        }
+
         const datos = {
             ididentificacion: ididentificacion.current.value,
             nombre_cliente: nombre_cliente.current.value,

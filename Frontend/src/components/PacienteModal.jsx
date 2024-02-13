@@ -17,12 +17,17 @@ export default function PacienteModal() {
     const [validate, setValidate] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
-    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet } = useDental();
+    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet, validarCorreo } = useDental();
 
     const handleEnviarPaciente = e => {
         e.preventDefault();
         if (!validarCampos()) {
             handleErrorSweet('Por favor complete todos los campos');
+            return;
+        }
+
+        if (!validarCorreo(correo_paciente.current.value)) {
+            handleErrorSweet('El correo ingresado no es válido');
             return;
         }
 
