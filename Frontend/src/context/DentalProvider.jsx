@@ -130,7 +130,7 @@ const DentalProvider = ({ children }) => {
     }
 
     const handleCompletarCita = async (id, url, cita) => {
-        cita.estado_cita = 1;
+        
         try {
             Swal.fire({
                 title: `Desea completar la cita?`,
@@ -140,6 +140,7 @@ const DentalProvider = ({ children }) => {
                 denyButtonText: `No completar`,
             }).then(async (result) => {
                 if (result.isConfirmed) {
+                    cita.estado_cita = 1;
                     await clienteAxios.put(`${url}/${id}`, cita);
                     const datos = {
                         idcita: cita.idcita,
@@ -222,7 +223,7 @@ const DentalProvider = ({ children }) => {
         return mensajesError;
     }
 
-    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?', reiniciar = false) => {
+    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?', reiniciar = false, textoAceptar = 'Actualizar', textoDenny = `No actualizar`, mensajeGuardado= `Datos actualizado correctamente`) => {
         const actualizarDatos = async () => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
@@ -231,7 +232,7 @@ const DentalProvider = ({ children }) => {
                 mutate(url);
                 setRefresh((prevRefresh) => !prevRefresh);
                 Swal.fire('Cambios Guardados!', '', 'success');
-                toast.info(`Datos actualizado correctamente`);
+                toast.info(mensajeGuardado);
                 if (modal) { handleClickModal(); }
 
             } catch (error) {
@@ -252,8 +253,8 @@ const DentalProvider = ({ children }) => {
                     title: mensaje,
                     showDenyButton: true,
                     showCancelButton: true,
-                    confirmButtonText: 'Actualizar',
-                    denyButtonText: `No actualizar`,
+                    confirmButtonText: textoAceptar,
+                    denyButtonText: textoDenny,
                 });
 
                 if (result.isConfirmed) {
@@ -265,7 +266,7 @@ const DentalProvider = ({ children }) => {
                     }
                 } else if (result.isDenied) {
                     Swal.fire('No se guardaron los cambios', '', 'info');
-                    handleClickModal();
+                    
                 }
             } else {
                 await actualizarDatos();

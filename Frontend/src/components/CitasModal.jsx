@@ -54,8 +54,8 @@ export default function CitasModal() {
     e.preventDefault();
     if (validarCampos()) {
 
-      const idCliente = clientes.find(cliente => cliente.identificacion_cliente === inputCliente)?.idcliente;
-      const idPaciente = pacientes.find(paciente => paciente.identificacion_paciente === inputPaciente)?.idpaciente;
+      const idCliente = clientes.find(cliente => cliente.identificacion_cliente == inputCliente)?.idcliente;
+      const idPaciente = pacientes.find(paciente => paciente.identificacion_paciente == inputPaciente)?.idpaciente;
 
       if (!idCliente) {
         setNoExisteCliente(true);
