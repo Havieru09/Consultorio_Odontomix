@@ -24,8 +24,6 @@ export default function ModalDiente() {
 
   const { data: datosUbicaciones, isLoading: isLoadingUbicaciones } = useSWR('api/ubicacion_dental', () => clienteAxios('api/ubicacion_dental').then(res => res.data));
 
-  // const { data: datosDientes, isLoading: isLoadingDientes } = useSWR(`api/dientes/${datosActual.idHistorial}`, () => clienteAxios('api/dientes').then(res => res.data));
-
   const handleCondicionChange = (condicion) => {
     setSelectedCondicion(condicion);
     setDropdownOpen(false);
@@ -40,34 +38,18 @@ export default function ModalDiente() {
       handleErrorSweet('Debe seleccionar un tratamiento y una condición');
       return;
     }
-
-    console.log(datosActual);
-
-    // console.log(datosDientes.data);
-    // console.log(selectedCondicion ? selectedCondicion : datosActual.idcondicionesd);
     const condicionesPermitidas = [9, 10, 11];
     if (condicionesPermitidas.includes(selectedCondicion)) {
-      // Verificar si ya existen condiciones en el mismo hemisferio
       const condicionExistente = datosDientes.find(diente =>
         diente.ubicacion_dental.idhemisferio_diente === datosActual.idhemisferio_diente &&
         condicionesPermitidas.includes(diente.idcondicionesd)
       );
-
-      console.log(condicionExistente);
-  
-      // Si ya existe una condición y es diferente a la seleccionada o el tratamiento no coincide
       if (condicionExistente &&
         (condicionExistente.idcondicionesd !== selectedCondicion || condicionExistente.idtratamientos !== data.get('tratamiento'))) {
         handleErrorSweet('Este hemisferio ya tiene una condición registrada que no coincide con la seleccionada o el tratamiento es diferente.');
         return;
       }
     }
-
-    // console.log(filtrarDatos);
-    // if (hemisferioOcupado) {
-    //   handleErrorSweet('Este diente ya tiene un registro');
-    //   return;
-    // }
 
     const datos = {
       iddiente: datosActual.idHistorial,
@@ -89,7 +71,6 @@ export default function ModalDiente() {
       }
     });
 
-    // console.log(dientesUsado && !datosActual?.datosDiente);
     if (dientesUsado && !datosActual?.datosDiente) {
       const ubicacionesString = ubicacionesConDatos.join(', ');
       handleErrorSweet(`Los dientes ${ubicacionesString} ya tiene registro registrado`);
@@ -114,8 +95,6 @@ export default function ModalDiente() {
     setTimeout(() => {
       setActualizar(!actualizar);
     }, 1500);
-
-
   }
 
   useEffect(() => {

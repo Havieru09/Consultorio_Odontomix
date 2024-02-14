@@ -1,8 +1,6 @@
 import { FaTimes } from "react-icons/fa";
 import useDental from "../hooks/useDental";
 import { createRef, useState } from "react";
-import { toast } from "react-toastify";
-import Swal from 'sweetalert2';
 
 export default function PacienteModal() {
     const ididentificacion = createRef();
@@ -19,12 +17,17 @@ export default function PacienteModal() {
     const [validate, setValidate] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
-    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet } = useDental();
+    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet, validarCorreo } = useDental();
 
     const handleEnviarPaciente = e => {
         e.preventDefault();
         if (!validarCampos()) {
             handleErrorSweet('Por favor complete todos los campos');
+            return;
+        }
+
+        if (!validarCorreo(correo_paciente.current.value)) {
+            handleErrorSweet('El correo ingresado no es válido');
             return;
         }
 
@@ -42,13 +45,10 @@ export default function PacienteModal() {
             correo_paciente: correo_paciente.current.value,
         };
         if (datosActual.idpaciente != null) {
-            handleEditarDatos(datosActual.idpaciente, datos, 'api/pacientes');
+            handleEditarDatos(datosActual.idpaciente, datos, 'api/pacientes', true, true, 'Desea actualizar información?', false);
         } else {
-            handleIngresarDatos(datos, 'api/pacientes');
-        }
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+            handleIngresarDatos(datos, 'api/pacientes', false);
+        }        
     }
 
     const validarCampos = () => {
@@ -145,6 +145,7 @@ export default function PacienteModal() {
                         defaultValue={datosActual ? datosActual.identificacion_paciente : ''}
                         ref={identificacion_paciente}
                         type="text"
+                        placeholder="Identificación del paciente"
                         name="identificacion_paciente"
                         onBlur={handleValidaIdentificacion} // Aquí se añade el evento onBlur
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.identificacion_paciente ? 'border-red-500' : ''}`}
@@ -157,6 +158,7 @@ export default function PacienteModal() {
                         defaultValue={datosActual ? datosActual.nombre_paciente : ''}
                         ref={nombre_paciente}
                         type="text" name="nombre_paciente"
+                        placeholder="Nombres del paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.nombre_paciente ? 'border-red-500' : ''}`}
                     />
                 </div>
@@ -166,6 +168,7 @@ export default function PacienteModal() {
                         defaultValue={datosActual ? datosActual.apellidos_paciente : ''}
                         ref={apellidos_paciente}
                         type="text"
+                        placeholder="Apellidos del paciente"
                         name="apellidos_paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.apellidos_paciente ? 'border-red-500' : ''}`}
                     />
@@ -178,6 +181,7 @@ export default function PacienteModal() {
                         ref={altura_paciente}
                         type="number"
                         name="altura_paciente"
+                        placeholder="Altura del paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.altura_paciente ? 'border-red-500' : ''}`}
                     />
                 </div>
@@ -188,6 +192,7 @@ export default function PacienteModal() {
                         ref={peso_paciente}
                         type="number"
                         name="peso_paciente"
+                        placeholder="Peso del paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.peso_paciente ? 'border-red-500' : ''}`}
                     />
                 </div>
@@ -205,6 +210,7 @@ export default function PacienteModal() {
                         ref={edad_paciente}
                         type="number"
                         name="edad_paciente"
+                        placeholder="Edad del paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.edad_paciente ? 'border-red-500' : ''}`}
                     />
                 </div>
@@ -214,6 +220,7 @@ export default function PacienteModal() {
                         defaultValue={datosActual ? datosActual.direccion_paciente : ''}
                         ref={direccion_paciente}
                         type="text"
+                        placeholder="Dirección del paciente"
                         name="direccion_paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.direccion_paciente ? 'border-red-500' : ''}`}
                     />
@@ -249,6 +256,7 @@ export default function PacienteModal() {
                         defaultValue={datosActual ? datosActual.correo_paciente : ''}
                         ref={correo_paciente}
                         type="email"
+                        placeholder="Correo del paciente"
                         name="correo_paciente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.correo_paciente ? 'border-red-500' : ''}`}
                     />

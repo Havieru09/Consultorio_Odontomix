@@ -6,11 +6,10 @@ import useDental from "../../hooks/useDental";
 import { formatearFechaSinHora, formatearHora } from "../../helpers";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import Pagination from "../../components/Pagination";
-import { MdOutlineContentPasteSearch } from "react-icons/md";
 
 export default function VistaCitas() {
     const [terminoBusqueda, setTerminoBusqueda] = useState('');
-    const { handleTipoModal, handleClickModal, handleDatosActual, handleCompletarCita, handleEliminarDatos, handleErrorSweet } = useDental();
+    const { handleTipoModal, handleClickModal, handleDatosActual, handleCompletarCita, handleEliminarDatos, handleErrorSweet,setActualizarDatos } = useDental();
     const [citas, setCitas] = useState([]);
     const [paginaActual, setPaginaActual] = useState(1);
     const [totalDatos, setTotalDatos] = useState(0);
@@ -19,6 +18,7 @@ export default function VistaCitas() {
     const { data, error, isLoading } = useSWR(`api/citas?page=${paginaActual}`, fetcher);
 
     useEffect(() => {
+        setActualizarDatos('');
         handleTipoModal('citas');
         if (data && data.data) {
             setCitas(data.data);
@@ -47,10 +47,18 @@ export default function VistaCitas() {
 
 
     const handleEliminarCita = (id) => {
-        handleEliminarDatos(id, 'api/citas');
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+        setActualizarDatos(`api/citas?page=${paginaActual}`);
+        handleEliminarDatos(id, 'api/citas', "No podras recuperar la información!", true, false, `api/citas?page=${paginaActual}`);        
+    };
+
+    const handleEnviarDatos = (cita) => {
+        setActualizarDatos(`api/citas?page=${paginaActual}`);
+        handleDatosActual(cita)
+    };
+
+    const handleAgregarCitas = () => {
+        setActualizarDatos(`api/citas?page=${paginaActual}`);
+        handleClickModal();
     };
 
 
@@ -74,7 +82,7 @@ export default function VistaCitas() {
                         <FaSearch />
                     </button>
                 </div>
-                <button onClick={handleClickModal} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
+                <button onClick={handleAgregarCitas} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
                     <FaPlus className="mr-2" /> Agregar Cita
                 </button>
             </div>
@@ -112,11 +120,11 @@ export default function VistaCitas() {
                                         <p className="text-gray-700 text-base">Fecha de la cita: <span className="font-bold">{(formatearFechaSinHora(cita.fechahora_cita) + ' a las: ' + formatearHora(cita.fechahora_cita))}</span></p>
                                         <div className="flex justify-between pl-4 pr-4 pt-4 border-gray-200">
                                             {/* Muestra el botón Editar solo si la cita está pendiente o cancelada */}
-                                            <button onClick={(event) => handleDatosActual(cita)} className={`bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded ${isPending || isCancelled ? '' : 'hidden'}`}>
+                                            <button onClick={(event) => handleEnviarDatos(cita)} className={`bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded ${isPending || isCancelled ? '' : 'hidden'}`}>
                                                 Editar
                                             </button>
                                             {/* Muestra el botón Completar solo si la cita está pendiente */}
-                                            <button onClick={() => handleCompletarCita(cita.idcita, 'api/citas', cita)}
+                                            <button onClick={() => handleCompletarCita(cita.idcita, 'api/citas', cita, `api/citas?page=${paginaActual}`)}
                                                 className={`bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded ${isPending ? '' : 'hidden'}`}
                                             >
                                                 Completar

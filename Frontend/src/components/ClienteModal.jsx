@@ -20,15 +20,21 @@ export default function ClienteModal() {
     const [validate, setValidate] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
-    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet } = useDental();
+    const { handleClickModal, handleIngresarDatos, datosActual, handleEditarDatos, datosId, handleErrorSweet, validarCorreo, actualizarDatosp } = useDental();
 
     const handleEnviarCliente = e => {
         e.preventDefault();
 
         if (!validateFields()) {
             handleErrorSweet('Por favor complete todos los campos');
-            return; // No continuar si hay campos inválidos
+            return;
         }
+
+        if (!validarCorreo(correo_cliente.current.value)) {
+            handleErrorSweet('El correo ingresado no es válido');
+            return;
+        }
+
         const datos = {
             ididentificacion: ididentificacion.current.value,
             nombre_cliente: nombre_cliente.current.value,
@@ -44,16 +50,10 @@ export default function ClienteModal() {
 
 
         if (datosActual.idcliente != null) {
-            handleEditarDatos(datosActual.idcliente, datos, 'api/clientes');
+            handleEditarDatos(datosActual.idcliente, datos, 'api/clientes', true, true, 'Desea actualizar información?', false);
         } else {
-            handleIngresarDatos(datos, 'api/clientes');
+            handleIngresarDatos(datos, 'api/clientes', false);
         }
-        //recargar la pagina sin navigate
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
-
-
     }
 
     const validateFields = () => {
@@ -83,7 +83,6 @@ export default function ClienteModal() {
         setInvalidFields(newInvalidFields);
         return Object.keys(newInvalidFields).length === 0; // Retorna true si todos los campos son válidos
     };
-
 
     const handleValidaIdentificacion = () => {
         if (identificacion_cliente.current && identificacion_cliente.current.value !== '') {
@@ -143,7 +142,6 @@ export default function ClienteModal() {
                     <select
                         defaultValue={datosActual ? datosActual.ididentificacion : ''}
                         ref={ididentificacion}
-
                         name="ididentificacion"
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         {datosId.map(datoId => (
@@ -159,6 +157,7 @@ export default function ClienteModal() {
                         defaultValue={datosActual ? datosActual.identificacion_cliente : ''}
                         ref={identificacion_cliente}
                         type="text"
+                        placeholder="Identificación del cliente"
                         name="identificacion_cliente"
                         onBlur={handleValidaIdentificacion} // Aquí se añade el evento onBlur
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.identificacion_cliente ? 'border-red-500' : ''}`}
@@ -173,6 +172,7 @@ export default function ClienteModal() {
                         defaultValue={datosActual ? datosActual.nombre_cliente : ''}
                         ref={nombre_cliente}
                         type="text"
+                        placeholder="Ingrese nombre del cliente"
                         name="nombre_cliente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.nombre_cliente ? 'border-red-500' : ''}`}
                     />
@@ -185,11 +185,12 @@ export default function ClienteModal() {
                         defaultValue={datosActual ? datosActual.apellidos_cliente : ''}
                         ref={apellidos_cliente}
                         type="text"
+                        placeholder="Ingrese apellidos del cliente"
                         name="apellidos_cliente"
                         className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${invalidFields.apellidos_cliente ? 'border-red-500' : ''}`}
                     />
                 </div>
-                
+
                 <div>
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Género:

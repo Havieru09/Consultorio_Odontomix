@@ -16,6 +16,7 @@ const DentalProvider = ({ children }) => {
     const [dientes, setDientes] = useState({});
     const [actualizar, setActualizar] = useState(false);
     const [actualizarId, setActualizarId] = useState(false);
+    const [actualizarDatosp, setActualizarDatos] = useState('');
 
     const handleClickModal = () => {
         if (modal === true) {
@@ -36,7 +37,8 @@ const DentalProvider = ({ children }) => {
 
     useEffect(() => {
         getDatos();
-        getExamenes();
+        getExamenes();   
+        // setActualizarDatos('') 
     }, [])
 
     const handleTipoModal = (tipo) => {
@@ -48,6 +50,11 @@ const DentalProvider = ({ children }) => {
         if (Modal) {
             handleClickModal();
         }
+    }
+
+    function validarCorreo(correo) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(correo);
     }
 
     const handleGetDatos = async (url) => {
@@ -129,8 +136,8 @@ const DentalProvider = ({ children }) => {
         navigate(url);
     }
 
-    const handleCompletarCita = async (id, url, cita) => {
-        cita.estado_cita = 1;
+    const handleCompletarCita = async (id, url, cita, urlNueva = '') => {
+
         try {
             Swal.fire({
                 title: `Desea completar la cita?`,
@@ -140,6 +147,7 @@ const DentalProvider = ({ children }) => {
                 denyButtonText: `No completar`,
             }).then(async (result) => {
                 if (result.isConfirmed) {
+                    cita.estado_cita = 1;
                     await clienteAxios.put(`${url}/${id}`, cita);
                     const datos = {
                         idcita: cita.idcita,
@@ -151,7 +159,7 @@ const DentalProvider = ({ children }) => {
                     // console.log(dataCita);
                     setRefresh(!refresh);
                     Swal.fire('Cita actualizada correctamente!', '', 'success')
-                    mutate(url);
+                    mutate(urlNueva ?  urlNueva : url);
                 } else if (result.isDenied) {
                     Swal.fire('No se actualizo correctamente', '', 'info')
                 }
@@ -171,7 +179,8 @@ const DentalProvider = ({ children }) => {
                 if (modal) {
                     handleClickModal();
                 }
-                mutate(url);
+                console.log(actualizarDatosp);
+                mutate(actualizarDatosp ?  actualizarDatosp : url);
                 if (reinicio) {
                     setTimeout(() => {
                         window.location.reload();
@@ -222,16 +231,16 @@ const DentalProvider = ({ children }) => {
         return mensajesError;
     }
 
-    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?') => {
+    const handleEditarDatos = async (id, datos, url, alerta = true, modal = true, mensaje = 'Desea actualizar información?', reiniciar = false, textoAceptar = 'Actualizar', textoDenny = `No actualizar`, mensajeGuardado = `Datos actualizado correctamente`) => {
         const actualizarDatos = async () => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
-                url = handleVerificarUrl(url);
-                console.log(url);
-                mutate(url);
-                setRefresh((prevRefresh) => !prevRefresh);
+                // console.log(url);
+                console.log(actualizarDatosp);
+                mutate(actualizarDatosp ?  actualizarDatosp : url);
+                // setRefresh((prevRefresh) => !prevRefresh);
                 Swal.fire('Cambios Guardados!', '', 'success');
-                toast.info(`Datos actualizado correctamente`);
+                toast.info(mensajeGuardado);
                 if (modal) { handleClickModal(); }
 
             } catch (error) {
@@ -252,15 +261,20 @@ const DentalProvider = ({ children }) => {
                     title: mensaje,
                     showDenyButton: true,
                     showCancelButton: true,
-                    confirmButtonText: 'Actualizar',
-                    denyButtonText: `No actualizar`,
+                    confirmButtonText: textoAceptar,
+                    denyButtonText: textoDenny,
                 });
 
                 if (result.isConfirmed) {
                     await actualizarDatos();
+                    if (reiniciar) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
                 } else if (result.isDenied) {
                     Swal.fire('No se guardaron los cambios', '', 'info');
-                    handleClickModal();
+
                 }
             } else {
                 await actualizarDatos();
@@ -278,8 +292,8 @@ const DentalProvider = ({ children }) => {
         })
     }
 
-    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, reiniciar = false) => {
-        // console.log(id, url, text);
+    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, reiniciar = false, rutanueva= '') => {
+        console.log(rutanueva);
         if (alerta) {
             Swal.fire({
                 title: 'Estas seguro de eliminarlo?',
@@ -291,38 +305,31 @@ const DentalProvider = ({ children }) => {
                 confirmButtonText: 'Si, Eliminar!'
             }).then((result) => {
                 if (result.isConfirmed) {
-
-
-                    clienteAxios.delete(`${url}/${id}`).then(response => {
+                    clienteAxios.delete(`${url}/${id}`).then(response => {                        
                         setTimeout(() => {
                             setRefresh(!refresh);
-                            mutate(url);
+                            mutate(rutanueva ?  rutanueva : url);
                         }, 1000);
                         Swal.fire(
                             'Eliminado!',
                             'Los datos fueron eliminados con exito.',
                             'success'
                         )
-                        if (reiniciar) {
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 2000);                            
-                        }
                     }).catch(error => {
                         console.log(error);
                         handleErrorSweet(error?.response?.data?.errors || "Ocurrió un error al intentar eliminar.");
                         return;
                     });
-                        
 
 
 
-                    
+
+
                 }
             })
         } else {
             clienteAxios.delete(`${url}/${id}`);
-            mutate(url);
+            mutate(actualizarDatosp ?  actualizarDatosp : url);
         }
     }
 
@@ -377,7 +384,9 @@ const DentalProvider = ({ children }) => {
                 setActualizar,
                 actualizarId,
                 setActualizarId,
-
+                validarCorreo,
+                actualizarDatosp,
+                setActualizarDatos,
             }}
         >
             {children}

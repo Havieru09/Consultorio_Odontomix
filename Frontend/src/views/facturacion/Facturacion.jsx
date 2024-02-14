@@ -309,7 +309,7 @@ export default function Facturacion() {
             estado_factura: 1,
         };
 
-        const data = await handleEditarDatos(idFactura, factura, 'api/cabecera', true, false, 'Desea anular la factura?');
+        const data = await handleEditarDatos(idFactura, factura, 'api/cabecera', true, false, 'Desea anular la factura?', false, 'Anular', 'No anular', 'Factura anulada');
         facturaNueva();
     }
 
