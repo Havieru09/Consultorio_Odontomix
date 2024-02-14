@@ -79,9 +79,8 @@ export default function CitasModal() {
         estado_cita: 0
       };
 
-      console.log(data);
       if (datosActual.idcita != null) {
-        handleEditarDatos(datosActual.idcita, data, 'api/citas', true, true, 'Desea actualizar información?', true);
+        handleEditarDatos(datosActual.idcita, data, 'api/citas', true, true, 'Desea actualizar información?', false);
       } else {
         handleIngresarDatos(data, 'api/citas', true);
         handleEnvioMail(data);

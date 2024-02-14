@@ -16,6 +16,7 @@ const DentalProvider = ({ children }) => {
     const [dientes, setDientes] = useState({});
     const [actualizar, setActualizar] = useState(false);
     const [actualizarId, setActualizarId] = useState(false);
+    const [actualizarDatosp, setActualizarDatos] = useState('');
 
     const handleClickModal = () => {
         if (modal === true) {
@@ -36,7 +37,8 @@ const DentalProvider = ({ children }) => {
 
     useEffect(() => {
         getDatos();
-        getExamenes();
+        getExamenes();   
+        // setActualizarDatos('') 
     }, [])
 
     const handleTipoModal = (tipo) => {
@@ -134,7 +136,7 @@ const DentalProvider = ({ children }) => {
         navigate(url);
     }
 
-    const handleCompletarCita = async (id, url, cita) => {
+    const handleCompletarCita = async (id, url, cita, urlNueva = '') => {
 
         try {
             Swal.fire({
@@ -157,7 +159,7 @@ const DentalProvider = ({ children }) => {
                     // console.log(dataCita);
                     setRefresh(!refresh);
                     Swal.fire('Cita actualizada correctamente!', '', 'success')
-                    mutate(url);
+                    mutate(urlNueva ?  urlNueva : url);
                 } else if (result.isDenied) {
                     Swal.fire('No se actualizo correctamente', '', 'info')
                 }
@@ -177,7 +179,8 @@ const DentalProvider = ({ children }) => {
                 if (modal) {
                     handleClickModal();
                 }
-                mutate(url);
+                console.log(actualizarDatosp);
+                mutate(actualizarDatosp ?  actualizarDatosp : url);
                 if (reinicio) {
                     setTimeout(() => {
                         window.location.reload();
@@ -232,10 +235,10 @@ const DentalProvider = ({ children }) => {
         const actualizarDatos = async () => {
             try {
                 const { data } = await clienteAxios.put(`${url}/${id}`, datos);
-                url = handleVerificarUrl(url);
-                console.log(url);
-                mutate(url);
-                setRefresh((prevRefresh) => !prevRefresh);
+                // console.log(url);
+                console.log(actualizarDatosp);
+                mutate(actualizarDatosp ?  actualizarDatosp : url);
+                // setRefresh((prevRefresh) => !prevRefresh);
                 Swal.fire('Cambios Guardados!', '', 'success');
                 toast.info(mensajeGuardado);
                 if (modal) { handleClickModal(); }
@@ -289,7 +292,8 @@ const DentalProvider = ({ children }) => {
         })
     }
 
-    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, reiniciar = false) => {
+    const handleEliminarDatos = (id, url, text = "No podras recuperar la información!", alerta = true, reiniciar = false, rutanueva= '') => {
+        console.log(rutanueva);
         if (alerta) {
             Swal.fire({
                 title: 'Estas seguro de eliminarlo?',
@@ -301,21 +305,16 @@ const DentalProvider = ({ children }) => {
                 confirmButtonText: 'Si, Eliminar!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    clienteAxios.delete(`${url}/${id}`).then(response => {
+                    clienteAxios.delete(`${url}/${id}`).then(response => {                        
                         setTimeout(() => {
                             setRefresh(!refresh);
-                            mutate(url);
+                            mutate(rutanueva ?  rutanueva : url);
                         }, 1000);
                         Swal.fire(
                             'Eliminado!',
                             'Los datos fueron eliminados con exito.',
                             'success'
                         )
-                        if (reiniciar) {
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 2000);
-                        }
                     }).catch(error => {
                         console.log(error);
                         handleErrorSweet(error?.response?.data?.errors || "Ocurrió un error al intentar eliminar.");
@@ -330,7 +329,7 @@ const DentalProvider = ({ children }) => {
             })
         } else {
             clienteAxios.delete(`${url}/${id}`);
-            mutate(url);
+            mutate(actualizarDatosp ?  actualizarDatosp : url);
         }
     }
 
@@ -385,7 +384,9 @@ const DentalProvider = ({ children }) => {
                 setActualizar,
                 actualizarId,
                 setActualizarId,
-                validarCorreo
+                validarCorreo,
+                actualizarDatosp,
+                setActualizarDatos,
             }}
         >
             {children}

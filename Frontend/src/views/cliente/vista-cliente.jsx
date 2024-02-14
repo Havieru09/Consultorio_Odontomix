@@ -9,7 +9,7 @@ import Pagination from '../../components/Pagination';
 
 export default function Vistacliente() {
 
-    const { handleClickModal, handleDatosActual, handleTipoModal, handleEliminarDatos, handleErrorSweet } = useDental();
+    const { handleClickModal, handleDatosActual, handleTipoModal, handleEliminarDatos, handleErrorSweet, setActualizarDatos } = useDental();
     const [clientes, setClientes] = useState([]);
     const [terminoBusqueda, setTerminoBusqueda] = useState('');
     const [paginaActual, setPaginaActual] = useState(1);
@@ -19,6 +19,7 @@ export default function Vistacliente() {
     const { data, error, isLoading } = useSWR(`api/clientes?page=${paginaActual}`, fetcher)
 
     useEffect(() => {
+        setActualizarDatos('');
         handleTipoModal('cliente');
         if (data && data.data) {
             setClientes(data.data);
@@ -31,8 +32,15 @@ export default function Vistacliente() {
     };
 
     const handleEliminarCliente = (id) => {
-        handleEliminarDatos(id, 'api/clientes', "No podras recuperar la información!", true, true);
+        setActualizarDatos(`api/clientes?page=${paginaActual}`);
+        handleEliminarDatos(id, 'api/clientes', "No podras recuperar la información!", true, false, `api/clientes?page=${paginaActual}`);
     };
+
+    const handleEnviarDatos = (cliente) => {
+        setActualizarDatos(`api/clientes?page=${paginaActual}`);
+        handleDatosActual(cliente)
+    };
+
         
 
     const handleBuscarCliente = () => {
@@ -51,6 +59,11 @@ export default function Vistacliente() {
             console.log(data.data);
             setClientes(data.data);
         }
+    };
+
+    const handleAgregarCliente = () => {
+        setActualizarDatos(`api/clientes?page=${paginaActual}`);
+        handleClickModal();
     };
 
     if (isLoading) return <Spinner />
@@ -73,7 +86,7 @@ export default function Vistacliente() {
                         <FaSearch />
                     </button>
                 </div>
-                <button onClick={handleClickModal} className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded flex items-center">
+                <button onClick={handleAgregarCliente} className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded flex items-center">
                     <FaPlus className="mr-2" /> Agregar Cliente
                 </button>
             </div>
@@ -135,7 +148,7 @@ export default function Vistacliente() {
                                     {cliente.correo_cliente}
                                 </td>
                                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <button onClick={(event) => handleDatosActual(cliente)} className="text-blue-500 hover:text-blue-700 mr-4">
+                                    <button onClick={(event) => handleEnviarDatos(cliente)} className="text-blue-500 hover:text-blue-700 mr-4">
                                         <FaEdit />
                                     </button>
                                     {/* <button onClick={(event) => handleEliminarDatos(cliente.idcliente, 'api/clientes')} className="text-red-500 hover:text-red-700"> */}

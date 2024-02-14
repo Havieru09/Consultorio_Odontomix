@@ -7,7 +7,7 @@ import Spinner from "../../components/Spinner";
 import Pagination from "../../components/Pagination";
 
 export default function VistaPaciente() {
-  const { handleClickModal, handleTipoModal, handleDatosActual, handleEliminarDatos, handleErrorSweet } = useDental();
+  const { handleClickModal, handleTipoModal, handleDatosActual, handleEliminarDatos, handleErrorSweet, setActualizarDatos } = useDental();
   const [pacientes, setPacientes] = useState([]);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
@@ -16,6 +16,7 @@ export default function VistaPaciente() {
   const fetcher = () => clienteAxios(`api/pacientes?page=${paginaActual}`).then(datos => datos.data)
   const { data, error, isLoading } = useSWR(`api/pacientes?page=${paginaActual}`, fetcher)
   useEffect(() => {
+    setActualizarDatos('');
     handleTipoModal('paciente');
     if (data && data.data) {
       setPacientes(data.data);
@@ -45,10 +46,21 @@ export default function VistaPaciente() {
 
   const handleEliminarPaciente = (id) => {
     try {
-      handleEliminarDatos(id, 'api/pacientes', "No podras recuperar la información!", true, true);
+      setActualizarDatos(`api/pacientes?page=${paginaActual}`);
+      handleEliminarDatos(id, 'api/pacientes', "No podras recuperar la información!", true, false, `api/pacientes?page=${paginaActual}`);
     } catch (error) {
       return;
     }
+  };
+
+  const handleEnviarDatos = (paciente) => {
+    setActualizarDatos(`api/pacientes?page=${paginaActual}`);
+    handleDatosActual(paciente)
+  };
+
+  const handleAgregarPaciente = () => {
+    setActualizarDatos(`api/pacientes?page=${paginaActual}`);
+    handleClickModal();
   };
 
   if (isLoading) return <Spinner />
@@ -71,7 +83,7 @@ export default function VistaPaciente() {
             <FaSearch />
           </button>
         </div>
-        <button onClick={handleClickModal} className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded flex items-center">
+        <button onClick={handleAgregarPaciente} className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded flex items-center">
           <FaPlus className="mr-2" /> Agregar Paciente
         </button>
       </div>
@@ -133,7 +145,7 @@ export default function VistaPaciente() {
                     {paciente.correo_paciente}
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <button onClick={(event) => handleDatosActual(paciente)} className="text-blue-500 hover:text-blue-700 mr-4">
+                    <button onClick={(event) => handleEnviarDatos(paciente)} className="text-blue-500 hover:text-blue-700 mr-4">
                       <FaEdit />
                     </button>
                     <button onClick={(event) => handleEliminarPaciente(paciente.idpaciente)} className="text-red-500 hover:text-red-700">
