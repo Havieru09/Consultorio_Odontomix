@@ -179,7 +179,6 @@ const DentalProvider = ({ children }) => {
                 if (modal) {
                     handleClickModal();
                 }
-                console.log(actualizarDatosp);
                 mutate(actualizarDatosp ?  actualizarDatosp : url);
                 if (reinicio) {
                     setTimeout(() => {

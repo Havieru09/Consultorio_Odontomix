@@ -81,8 +81,9 @@ export default function CitasModal() {
 
       if (datosActual.idcita != null) {
         handleEditarDatos(datosActual.idcita, data, 'api/citas', true, true, 'Desea actualizar información?', false);
+        handleEnvioMail(data);
       } else {
-        handleIngresarDatos(data, 'api/citas', true);
+        handleIngresarDatos(data, 'api/citas', false);
         handleEnvioMail(data);
       }
       // setTimeout(() => {
