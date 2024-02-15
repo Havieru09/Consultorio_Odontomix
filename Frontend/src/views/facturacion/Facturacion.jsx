@@ -242,14 +242,17 @@ export default function Facturacion() {
                     await handleIngresarDatos(detalleFactura, 'api/detalle', false, true, false);
                 });
             }
+            console.log(data.n_documento);
             handleLlamadoDeFactura(data.n_documento);
         }
     }
 
     const handleLlamadoDeFactura = async (valor = null) => {
-        if (valor) {
+        // console.log(valor);
+        if (valor === null) {
             valor = documento.current.value;
         }
+        
         const documentoFactura = valor;
         if (documentoFactura === '') {
             handleErrorSweet('Debe ingresar un numero de factura');
@@ -333,7 +336,7 @@ export default function Facturacion() {
                 </div>
 
                 <div className='text-base font-bold flex-1 text-center '>
-                    <h1 className="font-serif text-4xl">Factura</h1>
+                    <h1 className="font-serif text-4xl">NOTA DE VENTA</h1>
                 </div>
                 <hr className='my-4' />
                 {/* buscador para numero factura */}

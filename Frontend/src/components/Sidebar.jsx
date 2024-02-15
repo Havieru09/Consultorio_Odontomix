@@ -112,7 +112,7 @@ export default function Sidebar() {
 
           <li className={`mb-2 ${rol == 2 || rol == 1 ? '': 'hidden'}`}>
             <Link onClick={() => handleMenuClick('facturacion')} to="/factura/facturacion" className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-cyan-600 hover:text-white ${isPathActive('/facturacion') ? 'bg-cyan-600' : ''}`}>
-              Facturación
+              Nota de venta
             </Link>
           </li>
           <li className={`mb-2 ${rol == 2 || rol == 1 ? '': 'hidden'}`}>
