@@ -183,7 +183,7 @@ export default function Facturacion() {
                 setItems(data.data);
                 let num = data.data.find(i => i.num_documento != '');
                 setNum_documento(num.n_documento);
-                setConcepto('Factura # ' + num.n_documento);
+                setConcepto('Nota de venta # ' + num.n_documento);
             }
         }
     }, [data, num_documento, facturaExistente]);
@@ -252,7 +252,7 @@ export default function Facturacion() {
         }
         const documentoFactura = valor;
         if (documentoFactura === '') {
-            handleErrorSweet('Debe ingresar un numero de factura');
+            handleErrorSweet('Debe ingresar un numero de Nota de venta');
             return;
         }
 
@@ -309,7 +309,7 @@ export default function Facturacion() {
             estado_factura: 1,
         };
 
-        const data = await handleEditarDatos(idFactura, factura, 'api/cabecera', true, false, 'Desea anular la factura?', false, 'Anular', 'No anular', 'Factura anulada');
+        const data = await handleEditarDatos(idFactura, factura, 'api/cabecera', true, false, 'Desea anular la nota de venta?', false, 'Anular', 'No anular', 'Nota de venta anulada');
         facturaNueva();
     }
 
@@ -333,14 +333,14 @@ export default function Facturacion() {
                 </div>
 
                 <div className='text-base font-bold flex-1 text-center '>
-                    <h1 className="font-serif text-4xl">Factura</h1>
+                    <h1 className="font-serif text-4xl">Nota de venta</h1>
                 </div>
                 <hr className='my-4' />
                 {/* buscador para numero factura */}
                 <div className='flex flex-col justify-center items-center '>
                     <div className='flex w-1/2 items-center gap-2'>
                         <label className='font-serif font-bold text-base mb-2 w-1/3'>
-                            Buscar Factura:
+                            Buscar Nota de venta:
                         </label>
                         <input
                             type="text"
@@ -354,7 +354,7 @@ export default function Facturacion() {
                         </button>
                     </div>
                     <label className={` text-red-500 font-bold py-2 px-4 rounded text-4xl  ${facturaExistente && anuladas ? '' : 'hidden'}`}>
-                        Factura anulada
+                    Nota de venta anulada
                     </label>
                 </div>
                 <hr className='my-4' />
@@ -362,7 +362,7 @@ export default function Facturacion() {
                     <div className="grid grid-cols-2 gap-x-4 mt-8 gap-y-5">
                         <div className='flex justify-center items-center'>
                             <label className='font-serif font-bold text-base mb-2 w-1/3'>
-                                N° Factura:
+                                N° Nota de venta:
                             </label>
                             {/* lo */}
                             <input disabled type="text" defaultValue={num_documento} className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
