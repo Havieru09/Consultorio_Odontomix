@@ -248,11 +248,14 @@ export default function Facturacion() {
     }
 
     const handleLlamadoDeFactura = async (valor = null) => {
-        // console.log(valor);
-        if (valor === null) {
+        
+        console.log();
+        //valor tienen que ser null o undefined o ''
+
+        if (valor === null)  {
             valor = documento.current.value;
         }
-        
+        console.log(valor);
         const documentoFactura = valor;
         if (documentoFactura === '') {
             handleErrorSweet('Debe ingresar un numero de Nota de venta');
@@ -347,12 +350,11 @@ export default function Facturacion() {
                         </label>
                         <input
                             type="text"
-
                             className="shadow border py-2 px-3 rounded w-full h-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Ingrese numero de factura"
                             ref={documento}
                         />
-                        <button onClick={handleLlamadoDeFactura} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
+                        <button onClick={() => handleLlamadoDeFactura()} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
                             <FaSearch />
                         </button>
                     </div>
